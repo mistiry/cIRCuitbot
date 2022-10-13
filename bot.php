@@ -2,6 +2,7 @@
 //Load Library Files - load the files in ./lib/ which contain
 //the necessary functions and code to run the core of the bot.
 //NOTE: DO NOT PUT MODULES INTO THIS DIRECTORY!!
+system("clear");
 $libraryFiles = scandir("./lib");
 foreach($libraryFiles as $libraryFile) {
     if($libraryFile == "." || $libraryFile == "..") {
@@ -22,10 +23,11 @@ if(file_exists($configfile['c'])) {
     if($validation == false) {
         die("Configuration failed to pass validation checks.\n");
     }
+    echo "Running with configuration:\n";
+    print_r($config);
 } else {
     die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
 }
-
 
 //PHP Runtime Options - These control various PHP settings like the time limit,  
 //which must be 0 to allow the bot to run indefinitely.
@@ -62,6 +64,7 @@ foreach($config['triggers'] as $trigger) {
     }
     $validTrigger = "";
     $triggerConfig = "";
+    echo "Loaded triggers:\n";
     print_r($triggers);
 }
 
@@ -87,12 +90,9 @@ foreach($config['modules'] as $module) {
     }
     $validModule = "";
     $moduleConfig = "";
+    echo "Loaded modules:\n";
     print_r($modules);
 }
-
-
-//Echo out the config array
-print_r($config);
 
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.

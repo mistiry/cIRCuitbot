@@ -51,12 +51,12 @@ foreach($config['triggers'] as $trigger) {
         if($validTrigger == "valid") {
             $triggerConfig = parse_ini_file("./triggers/".$trigger."/trigger.conf");
             print_r($triggerConfig);
-            // foearch($triggerConfig['trigger'] as $trig) {
-            //     $pieces = explode("||",$trigger);
-            //     $triggerWord = $pieces[0];
-            //     $triggerFunc = $pieces[1];
-            //     $triggers[$triggerWord] = $triggerFunc;
-            // }
+            foearch($triggerConfig['trigger'] as $trig) {
+                $pieces = explode("||",$trigger);
+                $triggerWord = $pieces[0];
+                $triggerFunc = $pieces[1];
+                $triggers[$triggerWord] = $triggerFunc;
+            }
             require("./triggers/".$trigger."/trigger.php");
         } else {
             die("Trigger '".$trigger."' reports as invalid.\n");
@@ -76,12 +76,12 @@ foreach($config['modules'] as $module) {
         if($validModule == "valid") {
             $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
             print_r($moduleConfig);
-            // foeach($moduleConfig['module'] as $mod) {
-            //     $pieces = explode("||",$mod);
-            //     $moduleCmd = $pieces[0];
-            //     $moduleFunc = $pieces[1];
-            //     $modules[$moduleCmd] = $moduleFunc;
-            // }
+            foeach($moduleConfig['module'] as $mod) {
+                $pieces = explode("||",$mod);
+                $moduleCmd = $pieces[0];
+                $moduleFunc = $pieces[1];
+                $modules[$moduleCmd] = $moduleFunc;
+            }
             require("./modules/".$module."/module.php");
         } else {
             die("Module '".$module."' reports as invalid.\n");

@@ -22,7 +22,6 @@ if(file_exists($configfile['c'])) {
     if($validation == false) {
         die("Configuration failed to pass validation checks.\n");
     }
-    print_r($config);
 } else {
     die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
 }
@@ -89,6 +88,10 @@ foreach($config['modules'] as $module) {
     $validModule = "";
     $moduleConfig = "";
 }
+
+
+//Echo out the config array
+print_r($config);
 
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.

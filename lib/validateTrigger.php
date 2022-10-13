@@ -3,27 +3,28 @@ function validateTrigger($trigger) {
     //This function really could use some work to better validate the triggers being loaded
     //meet the standards and such
 
-    echo "Validating ".$trigger." .";
+    echo "Validating ".$trigger."\n";
+    $return = "invalid";
 
     //If the trigger's directory exists
-    if(file_exists("./".$trigger."/")) {
+    $triggerPath = "./triggers/".$trigger."";
+    if(file_exists("".$triggerPath."/")) {
         //If the trigger's config file exists
-        if(file_exists("./".$trigger."/trigger.conf")) {
+        if(file_exists("".$triggerPath."/trigger.conf")) {
             //If the trigger's PHP file exists
-            if(file_exists("./".$trigger."/trigger.php")) {
-                return true;
+            if(file_exists("".$triggerPath."/trigger.php")) {
+                $return = "valid";
             } else {
                 logEntry("PHP file not found for trigger '".$trigger."'");
-                return false;
+                $return = "invalid";
             }
         } else {
             logEntry("Config file not found for trigger '".$trigger."'");
-            return false;
+            $return = "invalid";
         }
     } else {
         logEntry("Directory not found for trigger '".$trigger."'");
-        return false;
+        $return = "invalid";
     }
-    //Should NEVER get to this return, but if somehow you do, return false to be safe
-    return false;
+    return $return;
 }

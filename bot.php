@@ -22,7 +22,6 @@ if(file_exists($configfile['c'])) {
     if($validation == false) {
         die("Configuration failed to pass validation checks.\n");
     }
-    print_r($config);
 } else {
     die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
 }
@@ -47,18 +46,18 @@ $triggers = array();
 foreach($config['triggers'] as $trigger) {
     if($trigger != "") {
         $validTrigger = validateTrigger($trigger);
-        if($validTrigger == true) {
-            $triggerConfig = parse_ini_file("./".$trigger."/trigger.conf");
-            print_r($triggerConfig);
-            // foearch($triggerConfig['trigger'] as $trig) {
-            //     $pieces = explode("||",$trigger);
-            //     $triggerWord = $pieces[0];
-            //     $triggerFunc = $pieces[1];
-            //     $triggers[$triggerWord] = $triggerFunc;
-            // }
-            require("./".$trigger."/trigger.php");
+        if($validTrigger == "valid") {
+            $triggerConfig = parse_ini_file("./triggers/".$trigger."/trigger.conf");
+            $triggersArray = $triggerConfig['trigger'];
+            foreach($triggersArray as $trig) {
+                $pieces = explode("||",$trig);
+                $triggerWord = $pieces[0];
+                $triggerFunc = $pieces[1];
+                $triggers[$triggerWord] = $triggerFunc;
+            }
+            require("./triggers/".$trigger."/trigger.php");
         } else {
-            die("Trigger '".$trigger."' reports as invalid.");
+            die("Trigger '".$trigger."' reports as invalid.\n");
         }
     }
     $validTrigger = "";
@@ -71,23 +70,27 @@ $modules = array();
 foreach($config['modules'] as $module) {
     if($module != "") {
         $validModule = validateModule($module);
-        if($validModule == true) {
-            $moduleConfig = parse_ini_file("./".$module."/module.conf");
-            print_r($moduleConfig);
-            // foeach($moduleConfig['module'] as $mod) {
-            //     $pieces = explode("||",$mod);
-            //     $moduleCmd = $pieces[0];
-            //     $moduleFunc = $pieces[1];
-            //     $modules[$moduleCmd] = $moduleFunc;
-            // }
-            require("./".$module."/module.php");
+        if($validModule == "valid") {
+            $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
+            $modulesArray = $moduleConfig['module'];
+            foreach($modulesArray as $mod) {
+                $pieces = explode("||",$mod);
+                $moduleCmd = $pieces[0];
+                $moduleFunc = $pieces[1];
+                $modules[$moduleCmd] = $moduleFunc;
+            }
+            require("./modules/".$module."/module.php");
         } else {
-            die("Module '".$module."' reports as invalid.");
+            die("Module '".$module."' reports as invalid.\n");
         }
     }
     $validModule = "";
     $moduleConfig = "";
 }
+
+
+//Echo out the config array
+print_r($config);
 
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
@@ -103,6 +106,7 @@ fputs($socket,"NICK ".$config['nickname']."\n");
 $ignore = array('001','002','003','004','005','250','251','252','253',
                 '254','255','265','266','372','375','376','353','366',
 );
+
 
 //Variable Initialization - Default initial variable values
 $ignoredUsers = array();

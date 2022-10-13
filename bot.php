@@ -47,7 +47,6 @@ $triggers = array();
 foreach($config['triggers'] as $trigger) {
     if($trigger != "") {
         $validTrigger = validateTrigger($trigger);
-        echo "validTrigger? ".$validTrigger."\n";
         if($validTrigger == "valid") {
             $triggerConfig = parse_ini_file("./triggers/".$trigger."/trigger.conf");
             $triggersArray = $triggerConfig['trigger'];

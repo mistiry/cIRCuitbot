@@ -7,11 +7,12 @@ function validateModule($module) {
     $return = "invalid";
 
     //If the module's directory exists
-    if(file_exists("./modules/".$module."/")) {
+    $modulePath = "./modules/".$module."";
+    if(file_exists("".$modulePath."/")) {
         //If the module's config file exists
-        if(file_exists("./".$module."/module.conf")) {
+        if(file_exists("".$modulePath."/module.conf")) {
             //If the module's PHP file exists
-            if(file_exists("./".$module."/module.php")) {
+            if(file_exists("".$modulePath."/module.php")) {
                 $return = "valid";
             } else {
                 logEntry("PHP file not found for module '".$module."'");

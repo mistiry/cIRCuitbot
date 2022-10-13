@@ -7,11 +7,12 @@ function validateTrigger($trigger) {
     $return = "invalid";
 
     //If the trigger's directory exists
-    if(file_exists("./triggers/".$trigger."/")) {
+    $triggerPath = "./triggers/".$trigger."";
+    if(file_exists("".$triggerPath."/")) {
         //If the trigger's config file exists
-        if(file_exists("./".$trigger."/trigger.conf")) {
+        if(file_exists("".$triggerPath."/trigger.conf")) {
             //If the trigger's PHP file exists
-            if(file_exists("./".$trigger."/trigger.php")) {
+            if(file_exists("".$triggerPath."/trigger.php")) {
                 $return = "valid";
             } else {
                 logEntry("PHP file not found for trigger '".$trigger."'");

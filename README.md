@@ -1,6 +1,8 @@
-# Welcome to _cIRCuitbot_
+# Welcome to cIRCuitbot
 While new to being published and open-sourced, the codebase behind cIRCuitbot started more than 10 years ago - as early as 2009, in fact. Originally created for very niche purposes for the #reddit-sysadmin channel on [Libera.Chat](https://libera.chat), over time the codebase was expanded, improved, overhauled, expanded again, overhauled some more, and eventually was finally turned into what you're looking at now.
 
+## Addons
+The official repo for addons is [cIRCuitbot-addons](https://github.com/mistiry/cIRCuitbot-addons).
 
 ## How it Works
 

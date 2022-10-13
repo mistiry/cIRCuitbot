@@ -4,6 +4,7 @@ function validateTrigger($trigger) {
     //meet the standards and such
 
     echo "Validating ".$trigger."\n";
+    $return = "invalid";
 
     //If the trigger's directory exists
     if(file_exists("./trigger/".$trigger."/")) {
@@ -11,25 +12,18 @@ function validateTrigger($trigger) {
         if(file_exists("./".$trigger."/trigger.conf")) {
             //If the trigger's PHP file exists
             if(file_exists("./".$trigger."/trigger.php")) {
-                return true;
+                $return = "valid";
             } else {
                 logEntry("PHP file not found for trigger '".$trigger."'");
-                return false;
+                $return = "invalid";
             }
         } else {
             logEntry("Config file not found for trigger '".$trigger."'");
-            return false;
+            $return = "invalid";
         }
     } else {
         logEntry("Directory not found for trigger '".$trigger."'");
-        return false;
+        $return = "invalid";
     }
-
-    //If you got here, WTF?
-    echo "trigger is ".$trigger."\n";
-    $cwd = getcwd();
-    echo "cwd is ".$cwd."\n";
-    
-    //Should NEVER get to this return, but if somehow you do, return false to be safe
-    return false;
+    return $return;
 }

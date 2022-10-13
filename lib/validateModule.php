@@ -21,8 +21,6 @@ function validateModule($module) {
     } else {
         logEntry("Directory not found for module '".$module."'");
         return false;
-    } else {
-        logEntry("Unable to find the module's directory at ./modules/".$module"");
     }
     //Should NEVER get to this return, but if somehow you do, return false to be safe
     return false;

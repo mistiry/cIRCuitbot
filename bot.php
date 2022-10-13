@@ -53,7 +53,7 @@ foreach($config['triggers'] as $trigger) {
             print_r($triggerConfig);
             $triggersArray = $triggerConfig['trigger'];
             print_r($triggersArray);
-            foearch($triggersArray as $trig) {
+            foreach($triggersArray as $trig) {
                 $pieces = explode("||",$trig);
                 $triggerWord = $pieces[0];
                 $triggerFunc = $pieces[1];
@@ -80,7 +80,7 @@ foreach($config['modules'] as $module) {
             print_r($moduleConfig);
             $modulesArray = $moduleConfig['module'];
             print_r($modulesArray);
-            foeach($modulesArray as $mod) {
+            foreach($modulesArray as $mod) {
                 $pieces = explode("||",$mod);
                 $moduleCmd = $pieces[0];
                 $moduleFunc = $pieces[1];

@@ -62,6 +62,7 @@ foreach($config['triggers'] as $trigger) {
     }
     $validTrigger = "";
     $triggerConfig = "";
+    print_r($triggers);
 }
 
 
@@ -86,6 +87,7 @@ foreach($config['modules'] as $module) {
     }
     $validModule = "";
     $moduleConfig = "";
+    print_r($modules);
 }
 
 

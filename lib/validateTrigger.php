@@ -3,7 +3,7 @@ function validateTrigger($trigger) {
     //This function really could use some work to better validate the triggers being loaded
     //meet the standards and such
 
-    echo "Validating ".$trigger." .";
+    echo "Validating ".$trigger."\n";
 
     //If the trigger's directory exists
     if(file_exists("./".$trigger."/")) {

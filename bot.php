@@ -58,7 +58,7 @@ foreach($config['triggers'] as $trigger) {
             // }
             require("./".$trigger."/trigger.php");
         } else {
-            die("Trigger '".$trigger."' reports as invalid.");
+            die("Trigger '".$trigger."' reports as invalid.\n");
         }
     }
     $validTrigger = "";
@@ -82,7 +82,7 @@ foreach($config['modules'] as $module) {
             // }
             require("./".$module."/module.php");
         } else {
-            die("Module '".$module."' reports as invalid.");
+            die("Module '".$module."' reports as invalid.\n");
         }
     }
     $validModule = "";

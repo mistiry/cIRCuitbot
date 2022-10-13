@@ -70,7 +70,6 @@ $modules = array();
 foreach($config['modules'] as $module) {
     if($module != "") {
         $validModule = validateModule($module);
-        echo "validModule? ".$validModule."\n";
         if($validModule == "valid") {
             $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
             $modulesArray = $moduleConfig['module'];

@@ -47,6 +47,7 @@ $triggers = array();
 foreach($config['triggers'] as $trigger) {
     if($trigger != "") {
         $validTrigger = validateTrigger($trigger);
+        echo "validTrigger? ".$validTrigger."\n";
         if($validTrigger == true) {
             $triggerConfig = parse_ini_file("./".$trigger."/trigger.conf");
             print_r($triggerConfig);
@@ -71,6 +72,7 @@ $modules = array();
 foreach($config['modules'] as $module) {
     if($module != "") {
         $validModule = validateModule($module);
+        echo "validModule? ".$validModule."\n";
         if($validModule == true) {
             $moduleConfig = parse_ini_file("./".$module."/module.conf");
             print_r($moduleConfig);

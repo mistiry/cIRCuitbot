@@ -64,9 +64,9 @@ foreach($config['triggers'] as $trigger) {
     }
     $validTrigger = "";
     $triggerConfig = "";
-    echo "Loaded triggers:\n";
-    print_r($triggers);
 }
+echo "Loaded triggers:\n";
+print_r($triggers);
 
 
 //Modules - Load modules defined in the conf file
@@ -90,10 +90,9 @@ foreach($config['modules'] as $module) {
     }
     $validModule = "";
     $moduleConfig = "";
-    echo "Loaded modules:\n";
-    print_r($modules);
 }
-
+echo "Loaded modules:\n";
+print_r($modules);
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 $socket = fsockopen($config['server'], $config['port']);

@@ -3,7 +3,6 @@ function validateModule($module) {
     //This function really could use some work to better validate the modules being loaded
     //meet the standards and such
 
-    echo "Validating ".$module."\n";
     $return = "invalid";
 
     //If the module's directory exists

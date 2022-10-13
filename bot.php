@@ -77,8 +77,6 @@ foreach($config['modules'] as $module) {
         if($validModule == "valid") {
             $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
             $modulesArray = $moduleConfig['module'];
-            print_r($modulesArray);
-            print_r($modulesConfig);
             foreach($modulesArray as $mod) {
                 $pieces = explode("||",$mod);
                 $moduleCmd = $pieces[0];

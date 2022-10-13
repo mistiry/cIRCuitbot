@@ -55,7 +55,7 @@ foreach($config['triggers'] as $trigger) {
                 $triggerFunc = $pieces[1];
                 $triggers[$triggerWord] = $triggerFunc;
             }
-            require("./triggers/".$trigger."/trigger.php");
+            include("./triggers/".$trigger."/trigger.php");
         } else {
             die("Trigger '".$trigger."' reports as invalid.\n");
         }
@@ -80,7 +80,7 @@ foreach($config['modules'] as $module) {
                 $moduleFunc = $pieces[1];
                 $modules[$moduleCmd] = $moduleFunc;
             }
-            require("./modules/".$module."/module.php");
+            include("./modules/".$module."/module.php");
         } else {
             die("Module '".$module."' reports as invalid.\n");
         }

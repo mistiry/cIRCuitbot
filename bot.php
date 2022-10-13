@@ -280,7 +280,7 @@ while(1) {
             //implementation.
             foreach($triggers as $triggerWord=>$triggerFunc) {
                 if(stristr($ircdata['fullmessage'],$triggerWord)) {
-                    call_user_func($triggerFunc,$ircdata['fullmessage']);
+                    call_user_func($triggerFunc,$ircdata);
                 }
             }
 
@@ -289,7 +289,7 @@ while(1) {
             if($firstword[0] == $config['command_flag']) {
                 $command = trim(str_replace($config['command_flag'],"",$firstword));
                 if(array_key_exists($command,$modules)) {
-                    call_user_func($modules[$command],$ircdata['fullmessage']);
+                    call_user_func($modules[$command],$ircdata);
                 }
 
                 //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot

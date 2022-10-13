@@ -22,6 +22,12 @@ function validateModule($module) {
         logEntry("Directory not found for module '".$module."'");
         return false;
     }
+
+    //If you got here, WTF?
+    echo "module is ".$module."\n";
+    $cwd = getcwd();
+    echo "cwd is ".$cwd."\n";
+    
     //Should NEVER get to this return, but if somehow you do, return false to be safe
     return false;
 }

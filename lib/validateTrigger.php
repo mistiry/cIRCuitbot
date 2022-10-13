@@ -24,6 +24,12 @@ function validateTrigger($trigger) {
         logEntry("Directory not found for trigger '".$trigger."'");
         return false;
     }
+
+    //If you got here, WTF?
+    echo "trigger is ".$trigger."\n";
+    $cwd = getcwd();
+    echo "cwd is ".$cwd."\n";
+    
     //Should NEVER get to this return, but if somehow you do, return false to be safe
     return false;
 }

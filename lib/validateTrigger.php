@@ -7,7 +7,7 @@ function validateTrigger($trigger) {
     $return = "invalid";
 
     //If the trigger's directory exists
-    if(file_exists("./trigger/".$trigger."/")) {
+    if(file_exists("./triggers/".$trigger."/")) {
         //If the trigger's config file exists
         if(file_exists("./".$trigger."/trigger.conf")) {
             //If the trigger's PHP file exists

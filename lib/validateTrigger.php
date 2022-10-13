@@ -23,6 +23,8 @@ function validateTrigger($trigger) {
     } else {
         logEntry("Directory not found for trigger '".$trigger."'");
         return false;
+    } else {
+        logEntry("Unable to find the trigger's directory at ./triggers/".$trigger"");
     }
     //Should NEVER get to this return, but if somehow you do, return false to be safe
     return false;

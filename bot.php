@@ -50,9 +50,7 @@ foreach($config['triggers'] as $trigger) {
         echo "validTrigger? ".$validTrigger."\n";
         if($validTrigger == "valid") {
             $triggerConfig = parse_ini_file("./triggers/".$trigger."/trigger.conf");
-            print_r($triggerConfig);
             $triggersArray = $triggerConfig['trigger'];
-            print_r($triggersArray);
             foreach($triggersArray as $trig) {
                 $pieces = explode("||",$trig);
                 $triggerWord = $pieces[0];
@@ -77,9 +75,7 @@ foreach($config['modules'] as $module) {
         echo "validModule? ".$validModule."\n";
         if($validModule == "valid") {
             $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
-            print_r($moduleConfig);
             $modulesArray = $moduleConfig['module'];
-            print_r($modulesArray);
             foreach($modulesArray as $mod) {
                 $pieces = explode("||",$mod);
                 $moduleCmd = $pieces[0];

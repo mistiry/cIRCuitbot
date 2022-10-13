@@ -3,7 +3,6 @@ function validateTrigger($trigger) {
     //This function really could use some work to better validate the triggers being loaded
     //meet the standards and such
 
-    echo "Validating ".$trigger."\n";
     $return = "invalid";
 
     //If the trigger's directory exists

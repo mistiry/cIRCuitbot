@@ -2,6 +2,7 @@
 //Load Library Files - load the files in ./lib/ which contain
 //the necessary functions and code to run the core of the bot.
 //NOTE: DO NOT PUT MODULES INTO THIS DIRECTORY!!
+system("clear");
 $libraryFiles = scandir("./lib");
 foreach($libraryFiles as $libraryFile) {
     if($libraryFile == "." || $libraryFile == "..") {
@@ -22,10 +23,11 @@ if(file_exists($configfile['c'])) {
     if($validation == false) {
         die("Configuration failed to pass validation checks.\n");
     }
+    echo "Running with configuration:\n";
+    print_r($config);
 } else {
     die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
 }
-
 
 //PHP Runtime Options - These control various PHP settings like the time limit,  
 //which must be 0 to allow the bot to run indefinitely.
@@ -55,7 +57,7 @@ foreach($config['triggers'] as $trigger) {
                 $triggerFunc = $pieces[1];
                 $triggers[$triggerWord] = $triggerFunc;
             }
-            require("./triggers/".$trigger."/trigger.php");
+            include("./triggers/".$trigger."/trigger.php");
         } else {
             die("Trigger '".$trigger."' reports as invalid.\n");
         }
@@ -63,6 +65,8 @@ foreach($config['triggers'] as $trigger) {
     $validTrigger = "";
     $triggerConfig = "";
 }
+echo "Loaded triggers:\n";
+print_r($triggers);
 
 
 //Modules - Load modules defined in the conf file
@@ -79,7 +83,7 @@ foreach($config['modules'] as $module) {
                 $moduleFunc = $pieces[1];
                 $modules[$moduleCmd] = $moduleFunc;
             }
-            require("./modules/".$module."/module.php");
+            include("./modules/".$module."/module.php");
         } else {
             die("Module '".$module."' reports as invalid.\n");
         }
@@ -87,11 +91,8 @@ foreach($config['modules'] as $module) {
     $validModule = "";
     $moduleConfig = "";
 }
-
-
-//Echo out the config array
-print_r($config);
-
+echo "Loaded modules:\n";
+print_r($modules);
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 $socket = fsockopen($config['server'], $config['port']);
@@ -278,7 +279,7 @@ while(1) {
             //implementation.
             foreach($triggers as $triggerWord=>$triggerFunc) {
                 if(stristr($ircdata['fullmessage'],$triggerWord)) {
-                    call_user_func($triggerFunc,$ircdata['fullmessage']);
+                    call_user_func($triggerFunc,$ircdata);
                 }
             }
 
@@ -287,7 +288,7 @@ while(1) {
             if($firstword[0] == $config['command_flag']) {
                 $command = trim(str_replace($config['command_flag'],"",$firstword));
                 if(array_key_exists($command,$modules)) {
-                    call_user_func($modules[$command],$ircdata['fullmessage']);
+                    call_user_func($modules[$command],$ircdata);
                 }
 
                 //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot

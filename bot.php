@@ -315,12 +315,12 @@ while(1) {
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata['fullmessage']);
                 }
-                switch($firstword) {
-                    case "".$config['command_flag']."die":
-                        logEntry("Dying on command.");
-                        die("Dying on command.");
-                        break;
-                }
+                // switch($firstword) {
+                //     case "".$config['command_flag']."die":
+                //         logEntry("Dying on command.");
+                //         die("Dying on command.");
+                //         break;
+                // }
             }
         }
 

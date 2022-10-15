@@ -179,7 +179,7 @@ while(1) {
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
                 $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
                 $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
-                $ircdata['isbridgemessage'] == true;
+                $ircdata['isbridgemessage'] = true;
                 print_r($ircdata);
             }
         }

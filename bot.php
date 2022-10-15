@@ -177,7 +177,7 @@ while(1) {
                 $firstword = trim(strval($bridgeMessagePieces[1]));
                 $firstword = preg_replace('[^\w\d\!]', '', $firstword);
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
-                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
                 $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
                 print_r($ircdata);
             }
@@ -277,6 +277,7 @@ while(1) {
                 $firstword = trim($messagearray[1]);
             }
             echo "firstword is '$firstword'\n";
+            echo "firstword0 is '".$firstword[0]."'\n";
 
 
             //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.

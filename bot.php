@@ -170,17 +170,13 @@ while(1) {
                 $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
                 logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
-                echo "bridgeMessage is $bridgeMessage\n";
                 $bridgeMessagePieces = explode(" ",$bridgeMessage);
-                echo "bridgeMessagePieces is:\n";
-                print_r($bridgeMessagePieces);
                 $firstword = trim(strval($bridgeMessagePieces[1]));
                 $firstword = preg_replace('[^\w\d\!]', '', $firstword);
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
                 $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
                 $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
                 $ircdata['isbridgemessage'] = "true";
-                print_r($ircdata);
             }
         }
 
@@ -277,10 +273,6 @@ while(1) {
                 $messagearray = $ircdata['messagearray'];
                 $firstword = trim($messagearray[1]);
             }
-            echo "firstword is '$firstword'\n";
-            echo "firstword0 is '".$firstword[0]."'\n";
-            echo "firstword1 is '".$firstword[1]."'\n";
-            echo "firstword2 is '".$firstword[2]."'\n";
 
 
             //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.
@@ -303,9 +295,11 @@ while(1) {
                 }
             }
 
+            //EXPERIMENTAL - This is part of bridge support, so if you have that disabled this shouldnt matter at all. Might get a warning about checking
+            //a value in $ircdata that doesn't exist. Not all bridge bots may handle things the same, and so this might not work for all. This was tested on
+            //a bridge bot using 'matterbridge' and connected to a discord server. It works for that, though!
             if($ircdata['isbridgemessage'] == "true" && $firstword[1] == $config['command_flag']) {
                 $firstwordpieces = explode($config['command_flag'],$firstword);
-                print_r($firstwordpieces);
                 $command = trim($firstwordpieces[1]);
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata);

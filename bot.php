@@ -170,7 +170,10 @@ while(1) {
                 $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
                 logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
+                echo "bridgeMessage is $bridgeMessage\n";
                 $bridgeMessagePieces = explode(" ",$bridgeMessage);
+                echo "bridgeMessagePieces is:\n";
+                print_r($bridgeMessagePieces);
                 $firstword = trim(strval($bridgeMessagePieces[0]));
                 $firstword = preg_replace('[^\w\d\!]', '', $firstword);
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));

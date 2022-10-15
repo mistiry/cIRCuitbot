@@ -179,6 +179,7 @@ while(1) {
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
                 $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
                 $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+                $ircdata['isbridgemessage'] == true;
                 print_r($ircdata);
             }
         }
@@ -278,6 +279,8 @@ while(1) {
             }
             echo "firstword is '$firstword'\n";
             echo "firstword0 is '".$firstword[0]."'\n";
+            echo "firstword1 is '".$firstword[1]."'\n";
+            echo "firstword2 is '".$firstword[2]."'\n";
 
 
             //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.
@@ -292,7 +295,7 @@ while(1) {
 
 
             //Channel Command Parsing - This block parses commands that are seen in the main channel, either from modules or built-in commands
-            if($firstword[0] == $config['command_flag']) {
+            if($firstword[0] == $config['command_flag'] || ( $ircdata['isbridgemessage'] == true && $firstword[1] == $config['command_flag']) ) {
                 $command = trim(str_replace($config['command_flag'],"",$firstword));
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata);

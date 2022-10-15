@@ -177,7 +177,8 @@ while(1) {
                 $firstword = trim(strval($bridgeMessagePieces[1]));
                 $firstword = preg_replace('[^\w\d\!]', '', $firstword);
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
-                $ircdata['fullmessage'] = trim(str_replace($firstword,"",$bridgeMessage));
+                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+                $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
                 print_r($ircdata);
             }
         }

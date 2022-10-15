@@ -306,7 +306,7 @@ while(1) {
             if($ircdata['isbridgemessage'] == "true" && $firstword[1] == $config['command_flag']) {
                 $firstwordpieces = explode($config['command_flag'],$firstword);
                 print_r($firstwordpieces);
-                $firstword = trim($firstwordpieces[1]);
+                $command = trim($firstwordpieces[1]);
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata);
                 }

@@ -171,10 +171,12 @@ while(1) {
                 logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
                 $bridgeMessagePieces = explode(" ",$bridgeMessage);
-                $firstword = trim(strval($bridgeMessagePieces[0]));
+                $firstword = trim(strval($bridgeMessagePieces[1]));
                 $firstword = preg_replace('[^\w\d\!]', '', $firstword);
                 $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
-                $ircdata['fullmessage'] = trim(str_replace($firstword,"",$bridgeMessage));
+                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
+                $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+                $ircdata['isbridgemessage'] = "true";
             }
         }
 
@@ -290,21 +292,32 @@ while(1) {
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata);
                 }
+            }
 
-                //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot
-                switch($firstword) {
-                    case "".$config['command_flag']."help":
-                        sendHelp();
-                        break;
-                    case "".$config['command_flag']."ignore":
-                    case "".$config['command_flag']."i":
-                        tempIgnoreUnignore($ircdata['commandargs'],"ignore");
-                        break;
-                    case "".$config['command_flag']."unignore":
-                    case "".$config['command_flag']."ui":
-                        tempIgnoreUnignore($ircdata['commandargs'],"unignore");
-                        break;
+            //EXPERIMENTAL - This is part of bridge support, so if you have that disabled this shouldnt matter at all. Might get a warning about checking
+            //a value in $ircdata that doesn't exist. Not all bridge bots may handle things the same, and so this might not work for all. This was tested on
+            //a bridge bot using 'matterbridge' and connected to a discord server. It works for that, though!
+            if($ircdata['isbridgemessage'] == "true" && $firstword[1] == $config['command_flag']) {
+                $firstwordpieces = explode($config['command_flag'],$firstword);
+                $command = trim($firstwordpieces[1]);
+                if(array_key_exists($command,$modules)) {
+                    call_user_func($modules[$command],$ircdata);
                 }
+            }
+
+            //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot
+            switch($firstword) {
+                case "".$config['command_flag']."help":
+                    sendHelp();
+                    break;
+                case "".$config['command_flag']."ignore":
+                case "".$config['command_flag']."i":
+                    tempIgnoreUnignore($ircdata['commandargs'],"ignore");
+                    break;
+                case "".$config['command_flag']."unignore":
+                case "".$config['command_flag']."ui":
+                    tempIgnoreUnignore($ircdata['commandargs'],"unignore");
+                    break;
             }
         }
 
@@ -326,6 +339,7 @@ while(1) {
 
         //Zero-out variables
         $firstword = "";
+        $ircdata = "";
     }
 }
 ?>

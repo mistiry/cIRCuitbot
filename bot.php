@@ -288,7 +288,6 @@ while(1) {
 
             //Channel Command Parsing - This block parses commands that are seen in the main channel, either from modules or built-in commands
             if($firstword[0] == $config['command_flag']) {
-                echo "got a command\n";
                 $command = trim(str_replace($config['command_flag'],"",$firstword));
                 if(array_key_exists($command,$modules)) {
                     call_user_func($modules[$command],$ircdata);

@@ -276,7 +276,7 @@ while(1) {
                 $messagearray = $ircdata['messagearray'];
                 $firstword = trim($messagearray[1]);
             }
-            echo "firstword is $firstword\n";
+            echo "firstword is '$firstword'\n";
 
 
             //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.
@@ -332,6 +332,7 @@ while(1) {
 
         //Zero-out variables
         $firstword = "";
+        $ircdata = "";
     }
 }
 ?>

@@ -302,6 +302,7 @@ while(1) {
                     call_user_func($modules[$command],$ircdata);
                 }
             }
+
             if($ircdata['isbridgemessage'] == "true" && $firstword[1] == $config['command_flag']) {
                 echo "got a command\n";
                 $command = trim(str_replace($config['command_flag'],"",$firstword));
@@ -310,20 +311,19 @@ while(1) {
                 }
             }
 
-                //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot
-                switch($firstword) {
-                    case "".$config['command_flag']."help":
-                        sendHelp();
-                        break;
-                    case "".$config['command_flag']."ignore":
-                    case "".$config['command_flag']."i":
-                        tempIgnoreUnignore($ircdata['commandargs'],"ignore");
-                        break;
-                    case "".$config['command_flag']."unignore":
-                    case "".$config['command_flag']."ui":
-                        tempIgnoreUnignore($ircdata['commandargs'],"unignore");
-                        break;
-                }
+            //Built-in commands are defined here, as they are not loaded from a module but are part of the core bot
+            switch($firstword) {
+                case "".$config['command_flag']."help":
+                    sendHelp();
+                    break;
+                case "".$config['command_flag']."ignore":
+                case "".$config['command_flag']."i":
+                    tempIgnoreUnignore($ircdata['commandargs'],"ignore");
+                    break;
+                case "".$config['command_flag']."unignore":
+                case "".$config['command_flag']."ui":
+                    tempIgnoreUnignore($ircdata['commandargs'],"unignore");
+                    break;
             }
         }
 

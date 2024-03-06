@@ -96,6 +96,7 @@ print_r($modules);
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 $socket = fsockopen($config['server'], $config['port']);
+stream_set_blocking($socket, false);
 fputs($socket,"USER ".$config['nickname']." ".$config['nickname']." ".$config['nickname']." ".$config['nickname']." :".$config['nickname']."\n");
 if($config['password'] != "") {
     fputs($socket,"PASS ".$config['password']."\n");
@@ -131,6 +132,7 @@ while(1) {
     //Continuously pull new data from the socket
     $data = fgets($socket);
     if(!strlen($data)>1) {
+        echo "[DEBUG] $data not greater than 1: ".$data."\n";
         continue;
     }
 
@@ -138,10 +140,7 @@ while(1) {
     $timestamp = date("Y-m-d H:i:s T");
     $ircdata = processIRCdata($data);
 
-    checkTimersForExpiry();
-
     //DEBUG
-    echo "[DEBUG] isActivityActive ".strval($isActivtyActive)."\n";
     echo "[DEBUG] Timer Array:\n";
     print_r($timerArray);
 

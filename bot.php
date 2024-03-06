@@ -131,9 +131,9 @@ while(1) {
 
     //Continuously pull new data from the socket
     $data = fgets($socket);
-    echo "[DEBUG] Data is: ".$data."\n";
-    
-    if(!strlen($data)>1) {
+    echo "[DEBUG] Data is: '".$data."'\n";
+
+    if(!strlen($data)>1||is_null($data)||empty($data)) {
         echo "[DEBUG] $data not greater than 1: ".$data."\n";
         continue;
     }

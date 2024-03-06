@@ -112,6 +112,8 @@ $ignore = array('001','002','003','004','005','250','251','252','253',
 //Variable Initialization - Default initial variable values
 $ignoredUsers = array();
 $timestamp = date("Y-m-d H:i:s T");
+$isActivityActive = false;
+$timerArray = array();
 
 
 //Finalize Connection - Sleep briefly to allow server time to respond to login and nickname,
@@ -123,11 +125,23 @@ fputs($socket,"JOIN ".$config['channel']."\n");
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
 
+    //Timers
+    checkTimersForExpiry();
+
+    //DEBUG
+        //check value of isActivityActive
+    echo "[DEBUG] isActivityActive ".$isActivtyActive."\n";
+    echo "[DEBUG] Timer Array:\n";
+    print_r($timerArray);
+        //print the timers array
+
     //Continuously pull new data from the socket
     while($data = fgets($socket)) {
         //Set timestamp to current time and process the line of data
         $timestamp = date("Y-m-d H:i:s T");
         $ircdata = processIRCdata($data);
+
+        checkTimersForExpiry();
 
         //If the user is ignored, ignore their messages and go to the next line of data
         if(in_array($ircdata['userhostname'],$ignoredUsers)) {

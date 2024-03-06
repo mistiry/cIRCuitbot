@@ -131,6 +131,8 @@ while(1) {
 
     //Continuously pull new data from the socket
     $data = fgets($socket);
+    echo "[DEBUG] Data is: ".$data."\n";
+    
     if(!strlen($data)>1) {
         echo "[DEBUG] $data not greater than 1: ".$data."\n";
         continue;
@@ -140,9 +142,9 @@ while(1) {
     $timestamp = date("Y-m-d H:i:s T");
     $ircdata = processIRCdata($data);
 
-    //DEBUG
-    echo "[DEBUG] Timer Array:\n";
-    print_r($timerArray);
+    // //DEBUG
+    // echo "[DEBUG] Timer Array:\n";
+    // print_r($timerArray);
 
     //If the user is ignored, ignore their messages and go to the next line of data
     if(in_array($ircdata['userhostname'],$ignoredUsers)) {

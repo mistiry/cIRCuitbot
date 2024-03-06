@@ -9,6 +9,7 @@ function checkTimersForExpiry() {
             //timer is expired!
             logEntry("A timer has expired. Expiry was '".$expiry."' and current epoch is '".$currentEpoch."'. Calling function '".$function."'");
             //call_user_func($function,$ircdata);
+            $timerArray[$function] = NULL;
             return true;
         } else {
             //timer not expired

@@ -128,13 +128,6 @@ while(1) {
     //Timers
     checkTimersForExpiry();
 
-    //DEBUG
-        //check value of isActivityActive
-    echo "[DEBUG] isActivityActive ".$isActivtyActive."\n";
-    echo "[DEBUG] Timer Array:\n";
-    print_r($timerArray);
-        //print the timers array
-
     //Continuously pull new data from the socket
     while($data = fgets($socket)) {
         //Set timestamp to current time and process the line of data
@@ -142,6 +135,11 @@ while(1) {
         $ircdata = processIRCdata($data);
 
         checkTimersForExpiry();
+
+        //DEBUG
+        echo "[DEBUG] isActivityActive ".strval($isActivtyActive)."\n";
+        echo "[DEBUG] Timer Array:\n";
+        print_r($timerArray);
 
         //If the user is ignored, ignore their messages and go to the next line of data
         if(in_array($ircdata['userhostname'],$ignoredUsers)) {

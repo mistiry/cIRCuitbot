@@ -113,7 +113,7 @@ $ignore = array('001','002','003','004','005','250','251','252','253',
 //Variable Initialization - Default initial variable values
 $ignoredUsers = array();
 $timestamp = date("Y-m-d H:i:s T");
-$isActivityActive = false;
+$activeActivityArray = array();
 $timerArray = array();
 
 

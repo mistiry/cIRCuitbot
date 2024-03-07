@@ -358,6 +358,6 @@ while(1) {
     $ircdata = "";
 
     //Sleep for some microseconds for CPU sake
-    usleep(10000);
+    usleep(500000);
 }
 ?>

@@ -125,6 +125,9 @@ fputs($socket,"JOIN ".$config['channel']."\n");
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
+    //Timers
+    checkTimersForExpiry();
+
     //Pull new data from the socket
     $data = fgets($socket);
 
@@ -133,9 +136,6 @@ while(1) {
         usleep(500000);
         continue;
     }
-
-    //Timers
-    checkTimersForExpiry();
 
     //Set timestamp to current time and process the line of data
     $timestamp = date("Y-m-d H:i:s T");

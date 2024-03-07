@@ -132,7 +132,7 @@ while(1) {
     $data = fgets($socket);
 
     if(is_null($data)||empty($data)) {
-        echo "[DEBUG] Data was empty or null\n";
+        //echo "[DEBUG] Data was empty or null\n";
         usleep(500000);
         continue;
     }

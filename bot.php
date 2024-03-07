@@ -125,15 +125,15 @@ fputs($socket,"JOIN ".$config['channel']."\n");
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
-
     //Timers
     checkTimersForExpiry();
 
-    //Continuously pull new data from the socket
+    //Pull new data from the socket
     $data = fgets($socket);
 
-    if(strlen($data)<20||is_null($data)||empty($data)) {
-        //echo "[DEBUG] $data not greater than 1: ".strlen($data)."\n";
+    if(is_null($data)||empty($data)) {
+        //echo "[DEBUG] Data was empty or null\n";
+        usleep(500000);
         continue;
     }
 
@@ -358,6 +358,6 @@ while(1) {
     $ircdata = "";
 
     //Sleep for some microseconds for CPU sake
-    usleep(300000);
+    //usleep(300000);
 }
 ?>

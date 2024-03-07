@@ -356,5 +356,8 @@ while(1) {
     //Zero-out variables
     $firstword = "";
     $ircdata = "";
+
+    //Sleep for some microseconds for CPU sake
+    usleep(1000);
 }
 ?>

@@ -32,7 +32,7 @@ if(file_exists($configfile['c'])) {
 //PHP Runtime Options - These control various PHP settings like the time limit,  
 //which must be 0 to allow the bot to run indefinitely.
 set_time_limit(0);
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 date_default_timezone_set($config['timezone']);
 
 

@@ -3,10 +3,12 @@ function validateModule($module) {
     //This function really could use some work to better validate the modules being loaded
     //meet the standards and such
 
+    global $config;
+
     $return = "invalid";
 
     //If the module's directory exists
-    $modulePath = "./modules/".$module."";
+    $modulePath = "".$config['addons_dir']."/modules/".$module."";
     if(file_exists("".$modulePath."/")) {
         //If the module's config file exists
         if(file_exists("".$modulePath."/module.conf")) {

@@ -133,7 +133,7 @@ while(1) {
     checkTimersForExpiry();
 
     //Pull new data from the socket
-    $data = utf8_encode(fgets($socket));
+    $data = fgets($socket);
 
     if(is_null($data)||empty($data)) {
         //echo "[DEBUG] Data was empty or null\n";

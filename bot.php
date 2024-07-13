@@ -3,7 +3,6 @@
 //the necessary functions and code to run the core of the bot.
 //NOTE: DO NOT PUT MODULES INTO THIS DIRECTORY!!
 system("clear");
-mb_internal_encoding("UTF-8");
 $libraryFiles = scandir("./lib");
 foreach($libraryFiles as $libraryFile) {
     if($libraryFile == "." || $libraryFile == "..") {

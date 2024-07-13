@@ -41,6 +41,9 @@ $dbconnection = mysqli_connect($config['dbserver'],$config['dbuser'],$config['db
 if(!$dbconnection) {
     die("Unable to connect to database; error: " . mysqli_connect_error());
 }
+if(!mysqli_set_charset($dbconnection, "utf8")) {
+    die("Unable to set database character set to UTF-8");
+}
 
 
 //Triggers - Load triggers defined in the conf file

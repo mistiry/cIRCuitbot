@@ -32,7 +32,7 @@ if(file_exists($configfile['c'])) {
 //PHP Runtime Options - These control various PHP settings like the time limit,  
 //which must be 0 to allow the bot to run indefinitely.
 set_time_limit(0);
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 date_default_timezone_set($config['timezone']);
 
 
@@ -40,6 +40,9 @@ date_default_timezone_set($config['timezone']);
 $dbconnection = mysqli_connect($config['dbserver'],$config['dbuser'],$config['dbpass'],$config['db']);
 if(!$dbconnection) {
     die("Unable to connect to database; error: " . mysqli_connect_error());
+}
+if(!mysqli_set_charset($dbconnection, "utf8mb4")) {
+    die("Unable to set database character set to UTF-8mb4");
 }
 
 
@@ -49,7 +52,7 @@ foreach($config['triggers'] as $trigger) {
     if($trigger != "") {
         $validTrigger = validateTrigger($trigger);
         if($validTrigger == "valid") {
-            $triggerConfig = parse_ini_file("./triggers/".$trigger."/trigger.conf");
+            $triggerConfig = parse_ini_file("".$config['addons_dir']."/triggers/".$trigger."/trigger.conf");
             $triggersArray = $triggerConfig['trigger'];
             foreach($triggersArray as $trig) {
                 $pieces = explode("||",$trig);
@@ -57,7 +60,7 @@ foreach($config['triggers'] as $trigger) {
                 $triggerFunc = $pieces[1];
                 $triggers[$triggerWord] = $triggerFunc;
             }
-            include("./triggers/".$trigger."/trigger.php");
+            include("".$config['addons_dir']."/triggers/".$trigger."/trigger.php");
         } else {
             die("Trigger '".$trigger."' reports as invalid.\n");
         }
@@ -75,7 +78,7 @@ foreach($config['modules'] as $module) {
     if($module != "") {
         $validModule = validateModule($module);
         if($validModule == "valid") {
-            $moduleConfig = parse_ini_file("./modules/".$module."/module.conf");
+            $moduleConfig = parse_ini_file("".$config['addons_dir']."/modules/".$module."/module.conf");
             $modulesArray = $moduleConfig['module'];
             foreach($modulesArray as $mod) {
                 $pieces = explode("||",$mod);
@@ -83,7 +86,7 @@ foreach($config['modules'] as $module) {
                 $moduleFunc = $pieces[1];
                 $modules[$moduleCmd] = $moduleFunc;
             }
-            include("./modules/".$module."/module.php");
+            include("".$config['addons_dir']."/modules/".$module."/module.php");
         } else {
             die("Module '".$module."' reports as invalid.\n");
         }

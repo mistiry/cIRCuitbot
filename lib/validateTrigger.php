@@ -3,10 +3,12 @@ function validateTrigger($trigger) {
     //This function really could use some work to better validate the triggers being loaded
     //meet the standards and such
 
+    global $config;
+
     $return = "invalid";
 
     //If the trigger's directory exists
-    $triggerPath = "./triggers/".$trigger."";
+    $triggerPath = "".$config['addons_dir']."/triggers/".$trigger."";
     if(file_exists("".$triggerPath."/")) {
         //If the trigger's config file exists
         if(file_exists("".$triggerPath."/trigger.conf")) {

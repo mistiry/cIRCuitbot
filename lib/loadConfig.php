@@ -28,7 +28,7 @@ function reloadConfig() {
         $newConfig = parse_ini_file($configfile['c']);
         $validation = validateConfig($newConfig);
         if($validation == false) {
-            echo "Validation of new configuration failed, NOT RELOADING!"
+            echo "Validation of new configuration failed, NOT RELOADING!";
         } else {
             $config = $newConfig;
         }

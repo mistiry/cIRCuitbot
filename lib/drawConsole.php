@@ -52,10 +52,10 @@ function drawHeader() {
     }
 
     //Header Info
-    $headerLine1 = "".$logoLine1."                    ".formatConsoleString("  Server: ", "yellow", NULL, "bold")." ".formatConsoleString($config['server'], NULL, NULL, "underline")."";
-    $headerLine2 = "".$logoLine2."                    ".formatConsoleString(" Channel: ", "yellow", NULL, "bold")." ".formatConsoleString($config['channel'], NULL, NULL, "underline")."";
-    $headerLine3 = "".$logoLine3."                    ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
-    $headerLine4 = "".$logoLine4."                    ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
+    $headerLine1 = "".$logoLine1."                                   ".formatConsoleString("  Server: ", "yellow", NULL, "bold")." ".formatConsoleString($config['server'], NULL, NULL, "underline")."";
+    $headerLine2 = "".$logoLine2."                                   ".formatConsoleString(" Channel: ", "yellow", NULL, "bold")." ".formatConsoleString($config['channel'], NULL, NULL, "underline")."";
+    $headerLine3 = "".$logoLine3."                                   ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
+    $headerLine4 = "".$logoLine4."                                   ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
 
     echo $headerLine1 . "\n";
     echo $headerLine2 . "\n";
@@ -65,15 +65,15 @@ function drawHeader() {
 
 function drawLineSplit() {
     //Line split
-    $lineSplit = formatConsoleString("--------------------------------------------------------------------------------", "white");
-    echo $lineSplit . "\n";
+    $lineSplit = formatConsoleString("----------------------------------------------------------------------------------------------------------------------------------------------------------------", "white");
+    echo "\n" . $lineSplit . "\n\n";
 }
 
 function printColumnizedKeys($array) {
     $keys = array_keys($array);
     $numKeys = count($keys);
     $numColumns = 4;
-    $maxLineWidth = 80;
+    $maxLineWidth = 160;
     
     // Calculate the maximum width for each column
     $maxColWidth = floor($maxLineWidth / $numColumns);
@@ -95,7 +95,7 @@ function printColumnizedKeys($array) {
 }
 
 function printLastLogLines($logfile) {
-    $maxLineWidth = 80;
+    $maxLineWidth = 160;
     $lines = file($logfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $lastLines = array_slice($lines, -10);
 

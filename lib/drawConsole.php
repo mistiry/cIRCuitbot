@@ -11,14 +11,14 @@ function drawConsole() {
     drawLineSplit();
 
     //Loaded Commands
-    $titleCommands = formatConsoleString("                                --- COMMANDS ---                                ", "magenta", NULL, "bold");
+    $titleCommands = formatConsoleString("                                                                --- COMMANDS ---                                                                ", "magenta", NULL, "bold");
     echo $titleCommands . "\n";
     printColumnizedKeys($modules);
 
     drawLineSplit();
 
     //Loaded Triggers
-    $titleTriggers = formatConsoleString("                                --- TRIGGERS ---                                ", "magenta", NULL, "bold");
+    $titleTriggers = formatConsoleString("                                                                --- TRIGGERS ---                                                                ", "magenta", NULL, "bold");
     echo $titleTriggers . "\n";
     printColumnizedKeys($triggers);
 

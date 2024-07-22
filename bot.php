@@ -46,6 +46,9 @@ loadTriggers();
 //Load the modules enabled in the config file
 loadModules();
 
+//Draw the initial console
+drawConsole();
+
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
 
@@ -57,7 +60,7 @@ joinChannel($config['channel']);
 while(1) {
     //Draw the console output each refresh
     drawConsole();
-    
+
     //Heartbeat Check
     heartbeatCheck();
 

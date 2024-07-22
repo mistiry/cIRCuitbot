@@ -13,26 +13,7 @@ function loadConfig() {
         if($validation == false) {
             die("Configuration failed to pass validation checks.\n");
         }
-        echo "Running with configuration:\n";
-        print_r($config);
     } else {
         die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
-    }
-}
-
-function reloadConfig() {
-    global $config;
-
-    $configfile = getopt("c:");
-    if(file_exists($configfile['c'])) {
-        $newConfig = parse_ini_file($configfile['c']);
-        $validation = validateConfig($newConfig);
-        if($validation == false) {
-            echo "Validation of new configuration failed, NOT RELOADING!";
-        } else {
-            $config = $newConfig;
-        }
-    } else {
-        echo "Unable to read specified configuration file.";
     }
 }

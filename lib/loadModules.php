@@ -24,7 +24,5 @@ function loadModules() {
         $validModule = "";
         $moduleConfig = "";
     }
-    echo "Loaded modules:\n";
-    print_r($modules);
     return true;
 }

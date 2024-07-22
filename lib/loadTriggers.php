@@ -24,7 +24,5 @@ function loadTriggers() {
         $validTrigger = "";
         $triggerConfig = "";
     }
-    echo "Loaded triggers:\n";
-    print_r($triggers);
     return true;
 }

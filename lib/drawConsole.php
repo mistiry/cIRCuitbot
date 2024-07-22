@@ -12,14 +12,14 @@ function drawConsole() {
 
     //Loaded Commands
     $titleCommands = formatConsoleString("                                --- COMMANDS ---                                ", "magenta", NULL, "bold");
-    echo $titleCommands . '\n';
+    echo $titleCommands . "\n";
     printColumnizedKeys($modules);
 
     drawLineSplit();
 
     //Loaded Triggers
     $titleTriggers = formatConsoleString("                                --- TRIGGERS ---                                ", "magenta", NULL, "bold");
-    echo $titleTriggers . '\n';
+    echo $titleTriggers . "\n";
     printColumnizedKeys($triggers);
 
     drawLineSplit();
@@ -57,16 +57,16 @@ function drawHeader() {
     $headerLine3 = "".$logoLine3."                    ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
     $headerLine4 = "".$logoLine4."                    ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
 
-    echo $headerLine1 . '\n';
-    echo $headerLine2 . '\n';
-    echo $headerLine3 . '\n';
-    echo $headerLine4 . '\n';
+    echo $headerLine1 . "\n";
+    echo $headerLine2 . "\n";
+    echo $headerLine3 . "\n";
+    echo $headerLine4 . "\n";
 }
 
 function drawLineSplit() {
     //Line split
     $lineSplit = formatConsoleString("--------------------------------------------------------------------------------", "white");
-    echo $lineSplit . '\n';
+    echo $lineSplit . "\n";
 }
 
 function printColumnizedKeys($array) {

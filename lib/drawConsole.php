@@ -57,16 +57,16 @@ function drawHeader() {
     $headerLine3 = "".$logoLine3."                    ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
     $headerLine4 = "".$logoLine4."                    ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
 
-    echo $headerLine1;
-    echo $headerLine2;
-    echo $headerLine3;
-    echo $headerLine4;
+    echo $headerLine1 . '\n';
+    echo $headerLine2 . '\n';
+    echo $headerLine3 . '\n';
+    echo $headerLine4 . '\n';
 }
 
 function drawLineSplit() {
     //Line split
     $lineSplit = formatConsoleString("--------------------------------------------------------------------------------", "white");
-    echo $lineSplit;
+    echo $lineSplit . '\n';
 }
 
 function printColumnizedKeys($array) {

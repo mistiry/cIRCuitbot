@@ -58,9 +58,6 @@ joinChannel($config['channel']);
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
-    //Draw the console output each refresh
-    drawConsole();
-
     //Heartbeat Check
     heartbeatCheck();
 
@@ -289,6 +286,9 @@ while(1) {
             // }
         }
     }
+
+    //Draw the console output each refresh
+    drawConsole();
 
     //Zero-out variables
     $firstword = "";

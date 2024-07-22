@@ -12,14 +12,14 @@ function drawConsole() {
 
     //Loaded Commands
     $titleCommands = formatConsoleString("                                                                --- COMMANDS ---                                                                ", "magenta", NULL, "bold");
-    echo $titleCommands . "\n";
+    echo $titleCommands . "\n\n";
     printColumnizedKeys($modules);
 
     drawLineSplit();
 
     //Loaded Triggers
     $titleTriggers = formatConsoleString("                                                                --- TRIGGERS ---                                                                ", "magenta", NULL, "bold");
-    echo $titleTriggers . "\n";
+    echo $titleTriggers . "\n\n";
     printColumnizedKeys($triggers);
 
     drawLineSplit();
@@ -66,7 +66,7 @@ function drawHeader() {
 function drawLineSplit() {
     //Line split
     $lineSplit = formatConsoleString("----------------------------------------------------------------------------------------------------------------------------------------------------------------", "white");
-    echo "\n" . $lineSplit . "\n\n";
+    echo $lineSplit . "\n";
 }
 
 function printColumnizedKeys($array) {

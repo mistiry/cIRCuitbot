@@ -24,7 +24,10 @@ function drawConsole() {
 
     drawLineSplit();
 
+
     //Log file
+    $titleTriggers = formatConsoleString("                                                                --- LOG FILE ---                                                                ", "magenta", NULL, "bold");
+    echo $titleTriggers . "\n\n";
     printLastLogLines($config['log_file']);
 }
 

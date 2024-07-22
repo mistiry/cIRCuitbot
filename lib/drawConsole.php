@@ -6,18 +6,20 @@ function drawConsole() {
     global $modules;
     global $triggers;
 
-    system("clear");
+    echo "\033[H\033[J";
     drawHeader();
     drawLineSplit();
 
     //Loaded Commands
-    $titleCommands = formatConsoleString("                                --- COMMANDS ---                                ", "cyan", NULL, "bold");
+    $titleCommands = formatConsoleString("                                --- COMMANDS ---                                ", "magenta", NULL, "bold");
+    echo $titleCommands;
     printColumnizedKeys($modules);
 
     drawLineSplit();
 
     //Loaded Triggers
-    $titleCommands = formatConsoleString("                                --- TRIGGERS ---                                ", "cyan", NULL, "bold");
+    $titleTriggers = formatConsoleString("                                --- TRIGGERS ---                                ", "magenta", NULL, "bold");
+    echo $titleTriggers;
     printColumnizedKeys($triggers);
 
     drawLineSplit();
@@ -28,16 +30,17 @@ function drawConsole() {
 
 function drawHeader() {
     global $connectionAlive;
+    global $config;
 
     //Logo Colorizing - logo is 46 chars wide
     $logo1 = "       _______  _____     _ __  __        __  ";
     $logo2 = "  ____/  _/ _ \/ ___/_ __(_) /_/ /  ___  / /_ ";
     $logo3 = " / __// // , _/ /__/ // / / __/ _ \/ _ \/ __/ ";
     $logo4 = " \__/___/_/|_|\___/\_,_/_/\__/_.__/\___/\__/  ";
-    $logoLine1 = formatConsoleString($logo1, "black", "red", "bold");
-    $logoLine2 = formatConsoleString($logo2, "black", "red", "bold");
-    $logoLine3 = formatConsoleString($logo3, "black", "red", "bold");
-    $logoLine4 = formatConsoleString($logo4, "black", "red", "bold");
+    $logoLine1 = formatConsoleString($logo1, "red", NULL, "bold");
+    $logoLine2 = formatConsoleString($logo2, "red", NULL, "bold");
+    $logoLine3 = formatConsoleString($logo3, "red", NULL, "bold");
+    $logoLine4 = formatConsoleString($logo4, "red", NULL, "bold");
 
     //Status
     if($connectionAlive === false) {
@@ -54,16 +57,16 @@ function drawHeader() {
     $headerLine3 = "".$logoLine3."                    ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
     $headerLine4 = "".$logoLine4."                    ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
 
-    echo $headerLine1 . '\n';
-    echo $headerLine2 . '\n';
-    echo $headerLine3 . '\n';
-    echo $headerLine4 . '\n';
+    echo $headerLine1;
+    echo $headerLine2;
+    echo $headerLine3;
+    echo $headerLine4;
 }
 
 function drawLineSplit() {
     //Line split
     $lineSplit = formatConsoleString("--------------------------------------------------------------------------------", "white");
-    echo $lineSplit . '\n';
+    echo $lineSplit;
 }
 
 function printColumnizedKeys($array) {

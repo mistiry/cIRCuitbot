@@ -27,6 +27,8 @@ $ignoredUsers = array();
 $timestamp = date("Y-m-d H:i:s T");
 $activeActivityArray = array();
 $timerArray = array();
+$connectionAlive = false;
+$heartbeat = time();
 
 //Load the configuration specific on the command line '-c' parameter.
 $config = "";
@@ -53,6 +55,12 @@ joinChannel($config['channel']);
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
+    //Draw the console output each refresh
+    drawConsole();
+    
+    //Heartbeat Check
+    heartbeatCheck();
+
     //Timers
     checkTimersForExpiry();
 
@@ -60,18 +68,16 @@ while(1) {
     $data = fgets($socket);
 
     if(is_null($data)||empty($data)) {
-        //echo "[DEBUG] Data was empty or null\n";
         usleep(500000);
         continue;
     }
 
+    //Update the heartbeat
+    heartbeatUpdate();
+
     //Set timestamp to current time and process the line of data
     $timestamp = date("Y-m-d H:i:s T");
     $ircdata = processIRCdata($data);
-
-    // //DEBUG
-    // echo "[DEBUG] Timer Array:\n";
-    // print_r($timerArray);
 
     //If the user is ignored, ignore their messages and go to the next line of data
     if(in_array($ircdata['userhostname'],$ignoredUsers)) {

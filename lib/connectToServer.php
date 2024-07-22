@@ -2,6 +2,7 @@
 function connectToServer() {
     global $config;
     global $socket;
+    global $connectionAlive;
 
     $socket = fsockopen($config['server'], $config['port']);
     stream_set_blocking($socket, false);
@@ -11,5 +12,7 @@ function connectToServer() {
     }
     fputs($socket,"NICK ".$config['nickname']."\n");
     sleep(1);
+    heartbeatUpdate();
+    $connectionAlive = true;
     return true;
 }

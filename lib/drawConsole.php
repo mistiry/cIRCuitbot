@@ -52,10 +52,10 @@ function drawHeader() {
     }
 
     //Header Info
-    $headerLine1 = "".$logoLine1."                                   ".formatConsoleString("  Server: ", "yellow", NULL, "bold")." ".formatConsoleString($config['server'], NULL, NULL, "underline")."";
-    $headerLine2 = "".$logoLine2."                                   ".formatConsoleString(" Channel: ", "yellow", NULL, "bold")." ".formatConsoleString($config['channel'], NULL, NULL, "underline")."";
-    $headerLine3 = "".$logoLine3."                                   ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
-    $headerLine4 = "".$logoLine4."                                   ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
+    $headerLine1 = "".$logoLine1."                                                                 ".formatConsoleString("  Server: ", "yellow", NULL, "bold")." ".formatConsoleString($config['server'], NULL, NULL, "underline")."";
+    $headerLine2 = "".$logoLine2."                                                                 ".formatConsoleString(" Channel: ", "yellow", NULL, "bold")." ".formatConsoleString($config['channel'], NULL, NULL, "underline")."";
+    $headerLine3 = "".$logoLine3."                                                                 ".formatConsoleString("Nickname: ", "yellow", NULL, "bold")." ".formatConsoleString($config['nickname'], NULL, NULL, "underline")."";
+    $headerLine4 = "".$logoLine4."                                                                 ".formatConsoleString("  Status: ", "yellow", NULL, "bold")." ".$status."";
 
     echo $headerLine1 . "\n";
     echo $headerLine2 . "\n";

@@ -181,14 +181,11 @@ while(1) {
                 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
-                    //logEntry("Updated user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                     continue;
                 } else {
                     logEntry("Unable to update user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 }
             } else {
-                //logEntry("Creating new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
-
                 //Count the words and set total lines to 1
                 $wordcount = str_word_count($ircdata['fullmessage']);
                 $totallines = 1;
@@ -224,7 +221,6 @@ while(1) {
             $firstword = trim($messagearray[1]);
         }
 
-
         //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.
         //This allows the bot to detect things, like URL's, within a message and perform an action, rather than explicitly
         //being given a command to run. Not tested with tons of triggers, but either way seems pretty inefficient in its current
@@ -234,7 +230,6 @@ while(1) {
                 call_user_func($triggerFunc,$ircdata);
             }
         }
-
 
         //Channel Command Parsing - This block parses commands that are seen in the main channel, either from modules or built-in commands
         if($firstword[0] == $config['command_flag']) {
@@ -290,11 +285,11 @@ while(1) {
     //Draw the console output each refresh
     drawConsole();
 
+    //Call dbConnect() to ensure database connection is still live
+    dbConnect();
+
     //Zero-out variables
     $firstword = "";
     $ircdata = "";
-
-    //Sleep for some microseconds for CPU sake
-    //usleep(300000);
 }
 ?>

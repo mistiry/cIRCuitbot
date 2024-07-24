@@ -179,7 +179,7 @@ while(1) {
                 case "user":
                     $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
                     $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
-                    $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
+                    $bridgeUserHostnameMiddle = "". mysqli_real_escape_string(trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."");
                     break;
                 case "hash":
                     $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));

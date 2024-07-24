@@ -212,7 +212,7 @@ while(1) {
             }
 
             //Query for existing record
-            $query = "SELECT id,nick_aliases,total_words,total_lines FROM known_users WHERE hostname = '".mysqli_real_escape_string($ircdata['userhostname'])."'";
+            $query = "SELECT id,nick_aliases,total_words,total_lines FROM known_users WHERE hostname = '".mysqli_real_escape_string($dbconnection, $ircdata['userhostname'])."'";
             $result = mysqli_query($dbconnection,$query);
 
             //Escape the message so we can safely insert it into the database

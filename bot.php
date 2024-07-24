@@ -179,7 +179,7 @@ while(1) {
                 case "user":
                     $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
                     $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
-                    $bridgeUserHostnameMiddle = "". mysqli_real_escape_string(trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."");
+                    $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
                     break;
                 case "hash":
                     $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));
@@ -212,7 +212,7 @@ while(1) {
             }
 
             //Query for existing record
-            $query = "SELECT id,nick_aliases,total_words,total_lines FROM known_users WHERE hostname = '".$ircdata['userhostname']."'";
+            $query = "SELECT id,nick_aliases,total_words,total_lines FROM known_users WHERE hostname = '".mysqli_real_escape_string($ircdata['userhostname'])."'";
             $result = mysqli_query($dbconnection,$query);
 
             //Escape the message so we can safely insert it into the database

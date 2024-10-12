@@ -1,4 +1,9 @@
 <?php
+//PHP Runtime Options - These control various PHP settings like the time limit,  
+//which must be 0 to allow the bot to run indefinitely.
+set_time_limit(0);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
+
 //Load Library Files - load the files in ./lib/ which contain
 //the necessary functions and code to run the core of the bot.
 //NOTE: DO NOT PUT MODULES INTO THIS DIRECTORY!!
@@ -12,122 +17,50 @@ foreach($libraryFiles as $libraryFile) {
     }
 }
 
-
-//Configuration - The bot should be ran with the '-c' flag, pointed
-//to a configuration file with valid values. See the included 
-//example.conf file to create your bot config.
-$configfile = getopt("c:");
-if(file_exists($configfile['c'])) {
-    $config = parse_ini_file($configfile['c']);
-    $validation = validateConfig($config);
-    if($validation == false) {
-        die("Configuration failed to pass validation checks.\n");
-    }
-    echo "Running with configuration:\n";
-    print_r($config);
-} else {
-    die("Unable to use '$configfile' - does it exist and have correct permissions?\n");
-}
-
-//PHP Runtime Options - These control various PHP settings like the time limit,  
-//which must be 0 to allow the bot to run indefinitely.
-set_time_limit(0);
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
-date_default_timezone_set($config['timezone']);
-
-
-//Database - Set up and establish the database connection.
-$dbconnection = mysqli_connect($config['dbserver'],$config['dbuser'],$config['dbpass'],$config['db']);
-if(!$dbconnection) {
-    die("Unable to connect to database; error: " . mysqli_connect_error());
-}
-if(!mysqli_set_charset($dbconnection, "utf8mb4")) {
-    die("Unable to set database character set to UTF-8mb4");
-}
-
-
-//Triggers - Load triggers defined in the conf file
-$triggers = array();
-foreach($config['triggers'] as $trigger) {
-    if($trigger != "") {
-        $validTrigger = validateTrigger($trigger);
-        if($validTrigger == "valid") {
-            $triggerConfig = parse_ini_file("".$config['addons_dir']."/triggers/".$trigger."/trigger.conf");
-            $triggersArray = $triggerConfig['trigger'];
-            foreach($triggersArray as $trig) {
-                $pieces = explode("||",$trig);
-                $triggerWord = $pieces[0];
-                $triggerFunc = $pieces[1];
-                $triggers[$triggerWord] = $triggerFunc;
-            }
-            include("".$config['addons_dir']."/triggers/".$trigger."/trigger.php");
-        } else {
-            die("Trigger '".$trigger."' reports as invalid.\n");
-        }
-    }
-    $validTrigger = "";
-    $triggerConfig = "";
-}
-echo "Loaded triggers:\n";
-print_r($triggers);
-
-
-//Modules - Load modules defined in the conf file
-$modules = array();
-foreach($config['modules'] as $module) {
-    if($module != "") {
-        $validModule = validateModule($module);
-        if($validModule == "valid") {
-            $moduleConfig = parse_ini_file("".$config['addons_dir']."/modules/".$module."/module.conf");
-            $modulesArray = $moduleConfig['module'];
-            foreach($modulesArray as $mod) {
-                $pieces = explode("||",$mod);
-                $moduleCmd = $pieces[0];
-                $moduleFunc = $pieces[1];
-                $modules[$moduleCmd] = $moduleFunc;
-            }
-            include("".$config['addons_dir']."/modules/".$module."/module.php");
-        } else {
-            die("Module '".$module."' reports as invalid.\n");
-        }
-    }
-    $validModule = "";
-    $moduleConfig = "";
-}
-echo "Loaded modules:\n";
-print_r($modules);
-
-//Connection - Open a socket connection to the IRC server, and pass our settings.
-$socket = fsockopen($config['server'], $config['port']);
-stream_set_blocking($socket, false);
-fputs($socket,"USER ".$config['nickname']." ".$config['nickname']." ".$config['nickname']." ".$config['nickname']." :".$config['nickname']."\n");
-if($config['password'] != "") {
-    fputs($socket,"PASS ".$config['password']."\n");
-}
-fputs($socket,"NICK ".$config['nickname']."\n");
-
-
 //Ignored Message Types - Ignore these messages types for logging/output purposes
 $ignore = array('001','002','003','004','005','250','251','252','253',
                 '254','255','265','266','372','375','376','353','366',
 );
-
 
 //Variable Initialization - Default initial variable values
 $ignoredUsers = array();
 $timestamp = date("Y-m-d H:i:s T");
 $activeActivityArray = array();
 $timerArray = array();
+$connectionAlive = false;
+$heartbeat = time();
 
+//Load the configuration specific on the command line '-c' parameter.
+$config = "";
+loadConfig();
+
+//Set the default timezone based on the configuration file
+date_default_timezone_set($config['timezone']);
+
+//Connect to the database
+dbConnect();
+
+//Load the triggers enabled in the config file
+loadTriggers();
+
+//Load the modules enabled in the config file
+loadModules();
+
+//Draw the initial console
+drawConsole();
+
+//Connection - Open a socket connection to the IRC server, and pass our settings.
+connectToServer();
 
 //Finalize Connection - Sleep briefly to allow server time to respond to login and nickname,
 //and then join the channel!
-sleep(1);
-fputs($socket,"JOIN ".$config['channel']."\n");
-
+joinChannel($config['channel']);
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
+    //Heartbeat Check
+    heartbeatCheck();
+
     //Timers
     checkTimersForExpiry();
 
@@ -135,18 +68,16 @@ while(1) {
     $data = fgets($socket);
 
     if(is_null($data)||empty($data)) {
-        //echo "[DEBUG] Data was empty or null\n";
         usleep(500000);
         continue;
     }
 
+    //Update the heartbeat
+    heartbeatUpdate();
+
     //Set timestamp to current time and process the line of data
     $timestamp = date("Y-m-d H:i:s T");
     $ircdata = processIRCdata($data);
-
-    // //DEBUG
-    // echo "[DEBUG] Timer Array:\n";
-    // print_r($timerArray);
 
     //If the user is ignored, ignore their messages and go to the next line of data
     if(in_array($ircdata['userhostname'],$ignoredUsers)) {
@@ -250,14 +181,11 @@ while(1) {
                 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
-                    //logEntry("Updated user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                     continue;
                 } else {
                     logEntry("Unable to update user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 }
             } else {
-                //logEntry("Creating new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
-
                 //Count the words and set total lines to 1
                 $wordcount = str_word_count($ircdata['fullmessage']);
                 $totallines = 1;
@@ -293,7 +221,6 @@ while(1) {
             $firstword = trim($messagearray[1]);
         }
 
-
         //Passive Triggers - These are items that get triggered passively, meaning no command is required for them to trigger.
         //This allows the bot to detect things, like URL's, within a message and perform an action, rather than explicitly
         //being given a command to run. Not tested with tons of triggers, but either way seems pretty inefficient in its current
@@ -303,7 +230,6 @@ while(1) {
                 call_user_func($triggerFunc,$ircdata);
             }
         }
-
 
         //Channel Command Parsing - This block parses commands that are seen in the main channel, either from modules or built-in commands
         if($firstword[0] == $config['command_flag']) {
@@ -356,11 +282,14 @@ while(1) {
         }
     }
 
+    //Draw the console output each refresh
+    drawConsole();
+
+    //Call dbConnect() to ensure database connection is still live
+    dbConnect();
+
     //Zero-out variables
     $firstword = "";
     $ircdata = "";
-
-    //Sleep for some microseconds for CPU sake
-    //usleep(300000);
 }
 ?>

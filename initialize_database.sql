@@ -11,4 +11,4 @@ CREATE TABLE `known_users` (
   `join_modes` varchar(8) DEFAULT NULL,
   `timestamp` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;

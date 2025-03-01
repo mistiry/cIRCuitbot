@@ -103,6 +103,9 @@ while(1) {
         if($ircdata['usernickname'] == $config['bridge_username'] && $ircdata['userhostname'] == $config['bridge_hostname']) {
             $bridgeMessage = trim($ircdata['fullmessage']);
             $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
+            if(count($bridgeMessagePieces < 2)) {
+                continue;
+            }
             $bridgeUser = trim(str_replace($config['bridge_left_delimeter'],"",$bridgeMessagePieces[0]));
             $bridgeUser = substr($bridgeUser,3,32);
             $bridgeUser = str_replace(" ", "", $bridgeUser);

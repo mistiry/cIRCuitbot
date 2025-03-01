@@ -102,10 +102,11 @@ while(1) {
     if($config['bridge_enabled'] == true) {
         if($ircdata['usernickname'] == $config['bridge_username'] && $ircdata['userhostname'] == $config['bridge_hostname']) {
             $bridgeMessage = trim($ircdata['fullmessage']);
-            $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
-            if(count($bridgeMessagePieces < 2)) {
+            if(substr($bridgeMessage, 3, 1) != $config['bridge_left_delimeter']) {
+                logEntry("Long message received over the bridge. Ignoring for lack of better handling at the moment.");
                 continue;
             }
+            $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
             $bridgeUser = trim(str_replace($config['bridge_left_delimeter'],"",$bridgeMessagePieces[0]));
             $bridgeUser = substr($bridgeUser,3,32);
             $bridgeUser = str_replace(" ", "", $bridgeUser);

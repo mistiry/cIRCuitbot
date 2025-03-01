@@ -106,34 +106,28 @@ while(1) {
                 $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
                 $bridgeUser = trim(str_replace($config['bridge_left_delimeter'],"",$bridgeMessagePieces[0]));
                 $bridgeUser = substr($bridgeUser,3,32);
-                if(!empty($bridgeUser)) {
-                    $ircdata['usernickname'] = trim("".$config['bridge_user_prefix']."".$bridgeUser."");
-                    switch($config['bridge_user_hostname_middle']) {
-                        case "user":
-                            $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
-                            $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
-                            $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
-                            break;
-                        case "hash":
-                            $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));
-                            $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
-                            break;
-                    }
-                    $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
-                    logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
-                    $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
-                    $bridgeMessagePieces = explode(" ",$bridgeMessage);
-                    $firstword = trim(strval($bridgeMessagePieces[1]));
-                    $firstword = preg_replace('[^\w\d\!]', '', $firstword);
-                    $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
-                    $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
-                    $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
-                    $ircdata['isbridgemessage'] = "true";
-                } else {
-                    continue;
+                $ircdata['usernickname'] = trim("".$config['bridge_user_prefix']."".$bridgeUser."");
+                switch($config['bridge_user_hostname_middle']) {
+                    case "user":
+                        $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
+                        $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
+                        $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
+                        break;
+                    case "hash":
+                        $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));
+                        $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
+                        break;
                 }
-            } else {
-                continue;
+                $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
+                logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+                $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
+                $bridgeMessagePieces = explode(" ",$bridgeMessage);
+                $firstword = trim(strval($bridgeMessagePieces[1]));
+                $firstword = preg_replace('[^\w\d\!]', '', $firstword);
+                $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
+                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
+                $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+                $ircdata['isbridgemessage'] = "true";
             }
         }
     }

@@ -201,7 +201,7 @@ while(1) {
                 $nickaliases = serialize($nickaliases);
 
                 //Compose the insert query
-                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."',','".$nickaliases."',','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
+                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."',',".$nickaliases.",','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
                 logEntry("Known Users Insert Query: '".$query."'");
 
                 //Run the query

@@ -187,7 +187,7 @@ while(1) {
 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
-                    continue 2;
+                    continue;
                 } else {
                     logEntry("Unable to update user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
                 }

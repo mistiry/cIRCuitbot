@@ -12,6 +12,7 @@ function connectToServer() {
     }
     fputs($socket,"NICK ".$config['nickname']."\n");
     sleep(1);
+    joinChannel($config['channel']);
     heartbeatUpdate();
     $connectionAlive = true;
     return true;

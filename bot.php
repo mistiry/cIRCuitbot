@@ -183,7 +183,7 @@ while(1) {
 
                 //Compose update query
                 $query = "UPDATE known_users SET nick_aliases = '".$nickaliases."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
-                logEntry("Known Users Update Query: '".$query."'");
+                //logEntry("Known Users Update Query: '".$query."'");
 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
@@ -202,7 +202,7 @@ while(1) {
 
                 //Compose the insert query
                 $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."',',".$nickaliases.",','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
-                logEntry("Known Users Insert Query: '".$query."'");
+                //logEntry("Known Users Insert Query: '".$query."'");
 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {

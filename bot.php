@@ -29,10 +29,14 @@ $activeActivityArray = array();
 $timerArray = array();
 $connectionAlive = false;
 $heartbeat = time();
+$messageBuffer = array();
 
 //Load the configuration specific on the command line '-c' parameter.
 $config = "";
 loadConfig();
+
+//Fill the circle message buffer with empty message arrays
+initMessageBuffer();
 
 //Set the default timezone based on the configuration file
 date_default_timezone_set($config['timezone']);
@@ -199,8 +203,7 @@ while(1) {
                 $nickaliases = serialize($nickaliases);
 
                 //Compose the insert query
-                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."',','".$nickaliases."',','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
-                
+                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."','".$nickaliases."','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
                     logEntry("Successfully created new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
@@ -218,6 +221,11 @@ while(1) {
     //Read Chat Data - Here, we read all messages so that we can act accordingly, either by
     //watching for a command, or passive functionality that is triggered solely on content of the message
     if($ircdata['messagetype'] == "PRIVMSG" && $ircdata['location'] == $config['channel']) {
+        // Add newest message to beginning of messageBuffer
+        array_unshift($messageBuffer, array($ircdata['usernickname'], $ircdata['fullmessage']));
+        // remove oldest message from end of messageBuffer
+        array_pop($messageBuffer);
+
         //First Word - Commands are always the first word of a message, so let's isolate that word so we can check if it is a command
         //Note: If bridge support is enabled, $firstword would already be populated by that codeblock; check for that first!
         if($firstword == "") {

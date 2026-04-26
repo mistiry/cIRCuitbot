@@ -43,9 +43,3 @@ function splitString($string, $maxLength = 375) {
     
     return $remainingParts;
 }
-
-// Example usage:
-$string = "Your string here...";
-$parts = splitString($string);
-
-// Now $parts will contain an array of strings, each with a maximum length of 375 characters

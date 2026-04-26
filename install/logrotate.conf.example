@@ -1,0 +1,17 @@
+# cIRCuitbot logrotate configuration
+#
+# Copy this file to /etc/logrotate.d/cIRCuitbot and update the log path
+# to match the log_file value in your bot's .conf file.
+#
+# Because logEntry opens and closes the log file on every write, the bot
+# will automatically start writing to the new file after rotation without
+# needing a restart signal.
+
+/path/to/your/cIRCuitbot.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+}

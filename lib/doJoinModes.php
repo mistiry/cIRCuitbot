@@ -13,7 +13,7 @@ function doJoinModes($userhostname,$usernickname) {
         while($row = mysqli_fetch_assoc($result)) {
             $joinmodes = $row['join_modes'];
             if($joinmodes != NULL) {
-                logEntry("Setting join modes '+".$joinmodes."' for '".$usernickname."@".$userhostname."'");
+                logEntry("Setting join modes '+".$joinmodes."' for '".$usernickname."@".$userhostname."'", 'DEBUG');
                 $allmodes = str_split($joinmodes);
                 foreach($allmodes as $mode) {
                     setMode("+",trim($mode),trim($usernickname));
@@ -23,7 +23,7 @@ function doJoinModes($userhostname,$usernickname) {
             }
         }
     } else {
-        logEntry("Error processing doJoinModes function for user '".$usernickname."@".$userhostname."'");
+        logEntry("Error processing doJoinModes function for user '".$usernickname."@".$userhostname."'", 'ERROR');
     }
     return true;
 }

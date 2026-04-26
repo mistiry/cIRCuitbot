@@ -12,7 +12,7 @@ function heartbeatCheck() {
     $now = time();
     $diff = $now - $heartbeat;
     if($diff > "300") {
-        logEntry("Heartbeat check FAILED! Time since last successful heartbeat: ".$diff." seconds. Attempting reconnect.");
+        logEntry("Heartbeat check FAILED! Time since last successful heartbeat: ".$diff." seconds. Attempting reconnect.", 'ERROR');
         $connectionAlive = false;
         connectToServer();
         return true;

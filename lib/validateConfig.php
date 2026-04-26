@@ -39,6 +39,11 @@ function validateConfig($config) {
         }
     }
 
+    $validLogLevels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+    if (!empty($config['log_level']) && !in_array(strtoupper($config['log_level']), $validLogLevels)) {
+        array_push($errors, "log_level must be one of: DEBUG, INFO, WARN, ERROR");
+    }
+
     if(empty($errors)) {
         echo "Configuration has passed validation checks.\n";
         return true;

@@ -1,0 +1,15 @@
+[Unit]
+Description=cIRCuitbot IRC Bot (__BOTNAME__)
+After=network-online.target mariadb.service mysql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__BOTUSER__
+WorkingDirectory=__WORKDIR__
+ExecStart=/usr/bin/php bot.php -c __CONFFILE__
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -61,5 +61,35 @@ Modules work very similarly to triggers but are only invoked in response to a co
 Modules are installed by placing the root of the module's folders into the `modules/` directory. The name of the folder is the name of the module, which you will need to add to the list of loaded modulesin the bot's config file. For example, if you wanted to use a module called `repeatMessage`, you would place the files at `modules/repeatMessage` and add the name `repeatMessage` to the modules section of the config file.
 Inside of the `repeatMessage` folder should, at minimum, contain a `module.conf` and `module.php` file, which are verified upon starting the bot.
 
+## Running as a systemd Service
+
+It is strongly recommended to run cIRCuitbot as a systemd service so that it starts automatically on boot and restarts itself if it crashes.
+
+An `install.sh` script is included to set this up. It must be run as root:
+
+```
+sudo ./install.sh
+```
+
+You will be prompted for:
+- **Bot name** — used to name the service (e.g. `myBot` creates `circuitbot-myBot.service`)
+- **System user** — the Linux user the bot process will run as
+- **Path to cIRCuitbot directory** — the full path to the directory containing `bot.php`
+- **Path to config file** — the full path to your bot's `.conf` file
+
+Each bot instance gets its own service, so multiple bots on the same server do not interfere with each other.
+
+Once installed, the bot can be managed with standard systemd commands:
+
+```
+systemctl start circuitbot-myBot
+systemctl stop circuitbot-myBot
+systemctl restart circuitbot-myBot
+systemctl status circuitbot-myBot
+journalctl -u circuitbot-myBot -f
+```
+
+If you have the `reloadBot` addon installed, you can also use `!restart` or `!update` from IRC (admin/owner flags required) to restart the bot or pull the latest code and restart, without needing SSH access.
+
 # Miscellaneous
 The main IRC channel where the bot is developed can be found in #cIRCuitbot on [Libera.Chat](https://libera.chat). 

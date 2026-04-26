@@ -233,7 +233,7 @@ while(1) {
         //being given a command to run. Not tested with tons of triggers, but either way seems pretty inefficient in its current
         //implementation.
         foreach($triggers as $triggerWord=>$triggerFunc) {
-            if(stristr($ircdata['fullmessage'],$triggerWord)) {
+            if($triggerWord === "*" || stristr($ircdata['fullmessage'],$triggerWord)) {
                 call_user_func($triggerFunc,$ircdata);
             }
         }

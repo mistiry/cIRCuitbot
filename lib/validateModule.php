@@ -16,15 +16,15 @@ function validateModule($module) {
             if(file_exists("".$modulePath."/module.php")) {
                 $return = "valid";
             } else {
-                logEntry("PHP file not found for module '".$module."'");
+                logEntry("PHP file not found for module '".$module."'", 'ERROR');
                 $return = "invalid";
             }
         } else {
-            logEntry("Config file not found for module '".$module."'");
+            logEntry("Config file not found for module '".$module."'", 'ERROR');
             $return = "invalid";
         }
     } else {
-        logEntry("Directory not found for module '".$module."'");
+        logEntry("Directory not found for module '".$module."'", 'ERROR');
         $return = "invalid";
     }
     return $return;

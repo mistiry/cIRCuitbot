@@ -16,15 +16,15 @@ function validateTrigger($trigger) {
             if(file_exists("".$triggerPath."/trigger.php")) {
                 $return = "valid";
             } else {
-                logEntry("PHP file not found for trigger '".$trigger."'");
+                logEntry("PHP file not found for trigger '".$trigger."'", 'ERROR');
                 $return = "invalid";
             }
         } else {
-            logEntry("Config file not found for trigger '".$trigger."'");
+            logEntry("Config file not found for trigger '".$trigger."'", 'ERROR');
             $return = "invalid";
         }
     } else {
-        logEntry("Directory not found for trigger '".$trigger."'");
+        logEntry("Directory not found for trigger '".$trigger."'", 'ERROR');
         $return = "invalid";
     }
     return $return;

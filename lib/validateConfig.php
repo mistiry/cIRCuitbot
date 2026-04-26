@@ -39,12 +39,33 @@ function validateConfig($config) {
         }
     }
 
-    if(empty($errors)) {
+    $validLogLevels = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+    if (!empty($config['log_level']) && !in_array(strtoupper($config['log_level']), $validLogLevels)) {
+        array_push($errors, "log_level must be one of: DEBUG, INFO, WARN, ERROR");
+    }
+
+    $warnings = array();
+    if (!empty($config['tls_enabled']) && $config['tls_enabled'] == true) {
+        if (isset($config['tls_verify_peer']) && $config['tls_verify_peer'] != true) {
+            array_push($warnings, "tls_verify_peer is disabled — connection will not verify the server certificate");
+        }
+    }
+
+    if (!empty($config['sasl_enabled']) && $config['sasl_enabled'] == true) {
+        if (empty($config['password'])) {
+            array_push($warnings, "sasl_enabled is true but no password is set — SASL authentication will be skipped");
+        }
+    }
+
+    if (empty($errors)) {
         echo "Configuration has passed validation checks.\n";
+        foreach ($warnings as $warning) {
+            echo "\tWARNING: $warning\n";
+        }
         return true;
     } else {
         echo "Configuration has FAILED validation checks with the following errors:\n";
-        foreach($errors as $error) {
+        foreach ($errors as $error) {
             echo "\t$error\n";
         }
         return false;

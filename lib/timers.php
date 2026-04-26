@@ -7,7 +7,7 @@ function checkTimersForExpiry() {
     foreach($timerArray as $function => $expiry) {
         if($expiry <= $currentEpoch) {
             //timer is expired!
-            logEntry("A timer has expired. Expiry was '".$expiry."' and current epoch is '".$currentEpoch."'. Calling function '".$function."'");
+            logEntry("A timer has expired. Expiry was '".$expiry."' and current epoch is '".$currentEpoch."'. Calling function '".$function."'", 'DEBUG');
             call_user_func($function,$ircdata);
             unset($timerArray[$function]);
             return true;

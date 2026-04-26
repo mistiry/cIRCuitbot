@@ -1,5 +1,7 @@
 <?php
-//PHP Runtime Options - These control various PHP settings like the time limit,  
+define('BOT_VERSION', '0.4.0');
+
+//PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.
 set_time_limit(0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
@@ -7,7 +9,6 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
 //Load Library Files - load the files in ./lib/ which contain
 //the necessary functions and code to run the core of the bot.
 //NOTE: DO NOT PUT MODULES INTO THIS DIRECTORY!!
-system("clear");
 $libraryFiles = scandir("./lib");
 foreach($libraryFiles as $libraryFile) {
     if($libraryFile == "." || $libraryFile == "..") {
@@ -46,15 +47,14 @@ loadTriggers();
 //Load the modules enabled in the config file
 loadModules();
 
-//Draw the initial console
-drawConsole();
+//Register signal handlers for graceful shutdown
+registerSignalHandlers();
+
+logEntry("*** cIRCuitbot v" . BOT_VERSION . " starting (PID " . getmypid() . ") ***", 'INFO');
+logEntry("Nickname: {$config['nickname']}  Server: {$config['server']}:{$config['port']}  Channel: {$config['channel']}", 'INFO');
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
-
-//Finalize Connection - Sleep briefly to allow server time to respond to login and nickname,
-//and then join the channel!
-joinChannel($config['channel']);
 
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
@@ -81,19 +81,24 @@ while(1) {
 
     //If the user is ignored, ignore their messages and go to the next line of data
     if(in_array($ircdata['userhostname'],$ignoredUsers)) {
-        logEntry("User '".$ircdata['usernickname']."@".$ircdata['userhostname']."' sent data but is ignored.");
+        logEntry("User '".$ircdata['usernickname']."@".$ircdata['userhostname']."' sent data but is ignored.", 'DEBUG');
         continue;
     }
 
     //If the message type of the data is one that should be ignored for output purposes, ignore it, otherwise log it
     if(!in_array($ircdata['messagetype'], $ignore)) {
-        logEntry($data);
+        logEntry($data, 'DEBUG');
     }
 
     //Ping Pong - when the IRC sends a PING, respond in kind with a PONG
     if($ircdata['command'] == "PING") {
-        logEntry("PONG ".$ircdata['messagetype']."");
-        fputs($socket, "PONG ".$ircdata['messagetype']."\n");
+        logEntry("PONG ".$ircdata['messagetype']."", 'DEBUG');
+        fputs($socket, "PONG ".$ircdata['messagetype']."\r\n");
+    }
+
+    //Detect our own JOIN confirmation from the server
+    if($ircdata['messagetype'] === 'JOIN' && $ircdata['usernickname'] === $config['nickname']) {
+        logEntry("Now in {$ircdata['location']}. Listening for commands.", 'INFO');
     }
 
     //Bridge Support - If bridge support is enabled, we must alter the data stream and modify
@@ -103,7 +108,7 @@ while(1) {
         if($ircdata['usernickname'] == $config['bridge_username'] && $ircdata['userhostname'] == $config['bridge_hostname']) {
             $bridgeMessage = trim($ircdata['fullmessage']);
             if(substr($bridgeMessage, 3, 1) != $config['bridge_left_delimeter']) {
-                logEntry("Long message received over the bridge. Ignoring for lack of better handling at the moment.");
+                logEntry("Long message received over the bridge. Ignoring for lack of better handling at the moment.", 'WARN');
                 continue;
             }
             $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
@@ -123,7 +128,7 @@ while(1) {
                     break;
             }
             $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
-            logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+            logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'DEBUG');
             $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
             $bridgeMessagePieces = explode(" ",$bridgeMessage);
             $firstword = trim(strval($bridgeMessagePieces[1]));
@@ -187,9 +192,9 @@ while(1) {
 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
-                    continue;
+                    break;
                 } else {
-                    logEntry("Unable to update user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+                    logEntry("Unable to update user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'ERROR');
                 }
             } else {
                 //Count the words and set total lines to 1
@@ -206,13 +211,13 @@ while(1) {
 
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
-                    logEntry("Successfully created new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+                    logEntry("Successfully created new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'INFO');
                     $nickaliases = "";
                     $aliases = "";
                     $query = "";
                     $result = "";
                 } else {
-                    logEntry("Failed creating new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+                    logEntry("Failed creating new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'ERROR');
                 }
             }
     break;
@@ -288,9 +293,6 @@ while(1) {
             // }
         }
     }
-
-    //Draw the console output each refresh
-    drawConsole();
 
     //Call dbConnect() to ensure database connection is still live
     dbConnect();

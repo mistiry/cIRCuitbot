@@ -22,12 +22,12 @@ function tempIgnoreUnignore($who,$type) {
                 sendPRIVMSG($ircdata['location'],"Removed hostname '".$who."' from temporary ignore list.");
             }
         }
-        logEntry("Current ignore list:");
+        logEntry("Current ignore list:", 'DEBUG');
         foreach($ignoredUsers as $ignoredUser) {
-            logEntry("        - ".$ignoredUser."");
+            logEntry("        - ".$ignoredUser."", 'DEBUG');
         }
     } else {
-        logEntry("Denied '".$type."' for non-admin user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+        logEntry("Denied '".$type."' for non-admin user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'WARN');
     }
     return true;
 }

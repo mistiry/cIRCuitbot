@@ -30,6 +30,7 @@ $activeActivityArray = array();
 $timerArray = array();
 $connectionAlive = false;
 $heartbeat = time();
+$channelMembers = array();
 
 //Load the configuration specific on the command line '-c' parameter.
 $config = "";
@@ -99,6 +100,60 @@ while(1) {
     //Detect our own JOIN confirmation from the server
     if($ircdata['messagetype'] === 'JOIN' && $ircdata['usernickname'] === $config['nickname']) {
         logEntry("Now in {$ircdata['location']}. Listening for commands.", 'INFO');
+    }
+
+    //Channel Members - Maintain an in-memory map of who is in the channel with their modes,
+    //hostname, and account. Seeded from the 353 NAMES list on join, then kept current as
+    //the bot sees joins, parts, mode changes, etc.
+    switch($ircdata['messagetype']) {
+        case '353':
+            $namepieces = explode(' ', trim($data));
+            foreach(array_slice($namepieces, 5) as $entry) {
+                $parsed = parseNamesEntry($entry);
+                if($parsed['nick'] !== '') {
+                    addChannelMember($parsed['nick'], '', $parsed['modes']);
+                }
+            }
+            break;
+        case '366':
+            logEntry("Channel members list built: " . count($channelMembers) . " users in {$config['channel']}", 'DEBUG');
+            break;
+        case 'JOIN':
+            if($ircdata['usernickname'] !== $config['nickname']) {
+                $joinpieces = explode(' ', trim($data));
+                $account = isset($joinpieces[3]) ? ltrim(trim($joinpieces[3]), ':') : '';
+                if($account === '*') $account = '';
+                addChannelMember($ircdata['usernickname'], $ircdata['userhostname'], [], $account);
+            }
+            break;
+        case 'PART':
+            removeChannelMember($ircdata['usernickname']);
+            break;
+        case 'QUIT':
+            removeChannelMember($ircdata['usernickname']);
+            break;
+        case 'KICK':
+            $kickpieces = explode(' ', trim($data));
+            $victim = trim($kickpieces[3] ?? '');
+            if($victim !== '') {
+                removeChannelMember($victim);
+            }
+            break;
+        case 'MODE':
+            if($ircdata['location'] === $config['channel']) {
+                $modepieces  = explode(' ', trim($data));
+                $modestring  = $modepieces[3] ?? '';
+                $modeargs    = array_map('trim', array_slice($modepieces, 4));
+                applyChannelModeChange($modestring, $modeargs);
+            }
+            break;
+        case 'NICK':
+            $newnick = ltrim(trim($ircdata['location']), ':');
+            renameChannelMember($ircdata['usernickname'], $newnick);
+            break;
+        case 'ACCOUNT':
+            updateChannelMemberAccount($ircdata['usernickname'], $ircdata['location']);
+            break;
     }
 
     //Bridge Support - If bridge support is enabled, we must alter the data stream and modify
@@ -278,19 +333,34 @@ while(1) {
         }
     }
 
+    //Op-targeted Channel Messages - Messages sent to @#channel are visible only to ops.
+    //On channels that restrict non-identified users, these are often blocked messages
+    //from users who don't know they need to identify with NickServ.
+    if($ircdata['messagetype'] == "PRIVMSG" && $ircdata['location'] == "@".$config['channel']) {
+        handleOpNotice($ircdata);
+    }
+
     //PM Command Parsing - This block parses commands that are seen in the private messages, either from modules or built-in commands
     if($ircdata['messagetype'] == "PRIVMSG" && $ircdata['location'] == $config['nickname']) {
+        if($firstword == "") {
+            $messagearray = $ircdata['messagearray'];
+            $firstword = trim($messagearray[1]);
+        }
         if($firstword[0] == $config['command_flag']) {
             $command = trim(str_replace($config['command_flag'],"",$firstword));
             if(array_key_exists($command,$modules)) {
                 call_user_func($modules[$command],$ircdata['fullmessage']);
             }
-            // switch($firstword) {
-            //     case "".$config['command_flag']."die":
-            //         logEntry("Dying on command.");
-            //         die("Dying on command.");
-            //         break;
-            // }
+            //Built-in PM commands (owner/admin only)
+            switch($firstword) {
+                case "".$config['command_flag']."members":
+                    if(isBotOwnerOrAdmin($ircdata)) {
+                        dumpChannelMembers($ircdata['usernickname']);
+                    } else {
+                        logEntry("Unauthorized !members attempt from {$ircdata['usernickname']}@{$ircdata['userhostname']}", 'WARN');
+                    }
+                    break;
+            }
         }
     }
 

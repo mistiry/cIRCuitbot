@@ -102,35 +102,36 @@ while(1) {
     if($config['bridge_enabled'] == true) {
         if($ircdata['usernickname'] == $config['bridge_username'] && $ircdata['userhostname'] == $config['bridge_hostname']) {
             $bridgeMessage = trim($ircdata['fullmessage']);
+            if(substr($bridgeMessage, 3, 1) != $config['bridge_left_delimeter']) {
+                logEntry("Long message received over the bridge. Ignoring for lack of better handling at the moment.");
+                continue;
+            }
             $bridgeMessagePieces = explode($config['bridge_right_delimeter'],$bridgeMessage);
             $bridgeUser = trim(str_replace($config['bridge_left_delimeter'],"",$bridgeMessagePieces[0]));
             $bridgeUser = substr($bridgeUser,3,32);
-            if(!empty($bridgeUser)) {
-                $ircdata['usernickname'] = trim("".$config['bridge_user_prefix']."".$bridgeUser."");
-                switch($config['bridge_user_hostname_middle']) {
-                    case "user":
-                        $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
-                        $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
-                        $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
-                        break;
-                    case "hash":
-                        $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));
-                        $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
-                        break;
-                }
-                $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
-                logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
-                $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
-                $bridgeMessagePieces = explode(" ",$bridgeMessage);
-                $firstword = trim(strval($bridgeMessagePieces[1]));
-                $firstword = preg_replace('[^\w\d\!]', '', $firstword);
-                $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
-                $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
-                $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
-                $ircdata['isbridgemessage'] = "true";
-            } else {
-                continue;
+            $bridgeUser = str_replace(" ", "", $bridgeUser);
+            $ircdata['usernickname'] = trim("".$config['bridge_user_prefix']."".$bridgeUser."");
+            switch($config['bridge_user_hostname_middle']) {
+                case "user":
+                    $bridgeUserHostnameMiddle = str_replace(" ","",$bridgeUser);
+                    $bridgeUserHostnameMiddle = trim(substr($bridgeUser,0,12));
+                    $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
+                    break;
+                case "hash":
+                    $bridgeUserHostnameMiddle = trim(substr(md5($bridgeUser),0,12));
+                    $bridgeUserHostnameMiddle = "". trim(substr($config['bridge_username'],0,2)) ."-".$bridgeUserHostnameMiddle."";
+                    break;
             }
+            $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
+            logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
+            $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
+            $bridgeMessagePieces = explode(" ",$bridgeMessage);
+            $firstword = trim(strval($bridgeMessagePieces[1]));
+            $firstword = preg_replace('[^\w\d\!]', '', $firstword);
+            $ircdata['commandargs'] = trim(str_replace($firstword,"",$bridgeMessage));
+            $ircdata['commandargs'] = trim(str_replace($bridgeMessagePieces[0],"",$ircdata['commandargs']));
+            $ircdata['fullmessage'] = trim(str_replace($bridgeMessagePieces[0],"",$bridgeMessage));
+            $ircdata['isbridgemessage'] = "true";
         }
     }
 
@@ -181,8 +182,9 @@ while(1) {
                 $nickaliases = serialize($aliases);
 
                 //Compose update query
-                $query = "UPDATE known_users SET nick_aliases = '".$nickaliases."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
-                
+                $query = "UPDATE known_users SET nick_aliases = '".mysqli_real_escape_string($dbconnection, $nickaliases)."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
+                //logEntry("Known Users Update Query: '".$query."'");
+
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
                     continue;
@@ -199,8 +201,9 @@ while(1) {
                 $nickaliases = serialize($nickaliases);
 
                 //Compose the insert query
-                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".$ircdata['userhostname']."',','".$nickaliases."',','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
-                
+                $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".mysqli_real_escape_string($dbconnection, $ircdata['userhostname'])."','".$nickaliases."','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";
+                //logEntry("Known Users Insert Query: '".$query."'");
+
                 //Run the query
                 if(mysqli_query($dbconnection,$query)) {
                     logEntry("Successfully created new user record for '".$ircdata['usernickname']."@".$ircdata['userhostname']."'");
@@ -230,7 +233,7 @@ while(1) {
         //being given a command to run. Not tested with tons of triggers, but either way seems pretty inefficient in its current
         //implementation.
         foreach($triggers as $triggerWord=>$triggerFunc) {
-            if(stristr($ircdata['fullmessage'],$triggerWord)) {
+            if($triggerWord === "*" || stristr($ircdata['fullmessage'],$triggerWord)) {
                 call_user_func($triggerFunc,$ircdata);
             }
         }

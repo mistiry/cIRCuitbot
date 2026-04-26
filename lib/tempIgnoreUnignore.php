@@ -6,7 +6,7 @@ function tempIgnoreUnignore($who,$type) {
 
     $requestor = $ircdata['userhostname'];
     $requestorBotFlags = getBotFlags($requestor);
-    if($requestorBotFlags == "A") {
+    if($requestorBotFlags == "A" || $requestorBotFlags == "O") {
         if($who == $config['bot_owner_hostname']) {
             sendPRIVMSG($ircdata['location'],"".$ircdata['usernickname'].": I would never ignore my owner.");
             return true;

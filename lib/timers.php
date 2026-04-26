@@ -11,9 +11,6 @@ function checkTimersForExpiry() {
             call_user_func($function,$ircdata);
             unset($timerArray[$function]);
             return true;
-        } else {
-            //timer not expired
-            return false;
         }
     }
 }

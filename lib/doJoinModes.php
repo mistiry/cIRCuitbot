@@ -4,10 +4,10 @@ function doJoinModes($userhostname,$usernickname) {
     global $timestamp;
     global $ircdata;
 
-    $query = "SELECT join_modes FROM known_users WHERE hostname = '".$userhostname."'";
+    $query = "SELECT join_modes FROM known_users WHERE hostname = '".mysqli_real_escape_string($dbconnection, $userhostname)."'";
     $result = mysqli_query($dbconnection,$query);
     if(mysqli_num_rows($result) == 0) {
-        return $true;
+        return true;
     }
     if(mysqli_num_rows($result) == 1) {
         while($row = mysqli_fetch_assoc($result)) {

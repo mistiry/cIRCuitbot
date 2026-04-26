@@ -1,0 +1,5 @@
+# Live configuration files inside the repo (test module/trigger confs).
+# The main bot config lives outside the repo entirely - this covers any
+# module or trigger confs that may be added under modules/ or triggers/.
+modules/**/*.conf
+triggers/**/*.conf

@@ -2,15 +2,16 @@
 function sendPRIVMSG($location,$message) {
     global $socket;
 
+    $message = str_replace(["\r", "\n"], ['', ''], $message);
     $maxLength = 375;
 
     //If $message is 375 or less:
     if (strlen($message) <= $maxLength) {
-        fputs($socket, "PRIVMSG ".$location." :".$message."\n");
+        fputs($socket, "PRIVMSG ".$location." :".$message."\r\n");
     } else {
         $messages = splitString($message);
         foreach($messages as $msgPart) {
-            fputs($socket, "PRIVMSG ".$location." :".$msgPart."\n");
+            fputs($socket, "PRIVMSG ".$location." :".$msgPart."\r\n");
         }
 
     }

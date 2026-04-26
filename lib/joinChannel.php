@@ -1,6 +1,7 @@
 <?php
 function joinChannel($channel) {
     global $socket;
-    fputs($socket,"JOIN ".$channel."\n");
+    logEntry("Joining {$channel}", 'INFO');
+    fputs($socket, "JOIN {$channel}\r\n");
     return true;
 }

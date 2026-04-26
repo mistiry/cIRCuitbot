@@ -4,24 +4,23 @@ function loadTriggers() {
     global $triggers;
 
     $triggers = array();
-    foreach($config['triggers'] as $trigger) {
-        if($trigger != "") {
+    foreach ($config['triggers'] as $trigger) {
+        if ($trigger != "") {
             $validTrigger = validateTrigger($trigger);
-            if($validTrigger == "valid") {
-                $triggerConfig = parse_ini_file("".$config['addons_dir']."/triggers/".$trigger."/trigger.conf");
-                $triggersArray = $triggerConfig['trigger'];
-                foreach($triggersArray as $trig) {
-                    $pieces = explode("||",$trig);
-                    $triggerWord = $pieces[0];
-                    $triggerFunc = $pieces[1];
-                    $triggers[$triggerWord] = $triggerFunc;
+            if ($validTrigger == "valid") {
+                $triggerConfig  = parse_ini_file("{$config['addons_dir']}/triggers/{$trigger}/trigger.conf");
+                $triggersArray  = $triggerConfig['trigger'];
+                foreach ($triggersArray as $trig) {
+                    $pieces                  = explode("||", $trig);
+                    $triggers[$pieces[0]]    = $pieces[1];
                 }
-                include("".$config['addons_dir']."/triggers/".$trigger."/trigger.php");
+                include("{$config['addons_dir']}/triggers/{$trigger}/trigger.php");
+                logEntry("Loaded trigger: {$trigger}", 'INFO');
             } else {
-                die("Trigger '".$trigger."' reports as invalid.\n");
+                die("Trigger '{$trigger}' reports as invalid.\n");
             }
         }
-        $validTrigger = "";
+        $validTrigger  = "";
         $triggerConfig = "";
     }
     return true;

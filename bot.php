@@ -48,6 +48,8 @@ loadModules();
 //Register signal handlers for graceful shutdown
 registerSignalHandlers();
 
+logEntry("Bot starting: {$config['nickname']} on {$config['server']}:{$config['port']} in {$config['channel']}", 'INFO');
+
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
 

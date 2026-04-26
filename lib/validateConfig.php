@@ -44,12 +44,22 @@ function validateConfig($config) {
         array_push($errors, "log_level must be one of: DEBUG, INFO, WARN, ERROR");
     }
 
-    if(empty($errors)) {
+    $warnings = array();
+    if (!empty($config['tls_enabled']) && $config['tls_enabled'] == true) {
+        if (isset($config['tls_verify_peer']) && $config['tls_verify_peer'] != true) {
+            array_push($warnings, "tls_verify_peer is disabled — connection will not verify the server certificate");
+        }
+    }
+
+    if (empty($errors)) {
         echo "Configuration has passed validation checks.\n";
+        foreach ($warnings as $warning) {
+            echo "\tWARNING: $warning\n";
+        }
         return true;
     } else {
         echo "Configuration has FAILED validation checks with the following errors:\n";
-        foreach($errors as $error) {
+        foreach ($errors as $error) {
             echo "\t$error\n";
         }
         return false;

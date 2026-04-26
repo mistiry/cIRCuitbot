@@ -49,6 +49,5 @@ function connectToServer() {
     joinChannel($config['channel']);
     heartbeatUpdate();
     $connectionAlive = true;
-    logEntry("Connected and joined {$config['channel']}. Listening for commands.", 'INFO');
     return true;
 }

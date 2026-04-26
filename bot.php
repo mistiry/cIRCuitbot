@@ -1,5 +1,7 @@
 <?php
-//PHP Runtime Options - These control various PHP settings like the time limit,  
+define('BOT_VERSION', '0.3.0');
+
+//PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.
 set_time_limit(0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
@@ -48,7 +50,8 @@ loadModules();
 //Register signal handlers for graceful shutdown
 registerSignalHandlers();
 
-logEntry("Bot starting: {$config['nickname']} on {$config['server']}:{$config['port']} in {$config['channel']}", 'INFO');
+logEntry("*** cIRCuitbot v" . BOT_VERSION . " starting (PID " . getmypid() . ") ***", 'INFO');
+logEntry("Nickname: {$config['nickname']}  Server: {$config['server']}:{$config['port']}  Channel: {$config['channel']}", 'INFO');
 
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
@@ -91,6 +94,11 @@ while(1) {
     if($ircdata['command'] == "PING") {
         logEntry("PONG ".$ircdata['messagetype']."", 'DEBUG');
         fputs($socket, "PONG ".$ircdata['messagetype']."\r\n");
+    }
+
+    //Detect our own JOIN confirmation from the server
+    if($ircdata['messagetype'] === 'JOIN' && $ircdata['usernickname'] === $config['nickname']) {
+        logEntry("Now in {$ircdata['location']}. Listening for commands.", 'INFO');
     }
 
     //Bridge Support - If bridge support is enabled, we must alter the data stream and modify

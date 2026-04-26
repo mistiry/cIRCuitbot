@@ -26,7 +26,7 @@ function validateConfig($config) {
     if(empty($channel)) {
         array_push($errors,"channel must not be empty");
     } else {
-        if(!substr($channel,0)=="#") {
+        if(substr($channel, 0, 1) != "#") {
             array_push($errors,"channel must start with #");
         }
     }

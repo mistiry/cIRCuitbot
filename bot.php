@@ -182,7 +182,7 @@ while(1) {
                 $nickaliases = serialize($aliases);
 
                 //Compose update query
-                $query = "UPDATE known_users SET nick_aliases = '".$nickaliases."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
+                $query = "UPDATE known_users SET nick_aliases = '".mysqli_real_escape_string($dbconnection, $nickaliases)."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
                 //logEntry("Known Users Update Query: '".$query."'");
 
                 //Run the query

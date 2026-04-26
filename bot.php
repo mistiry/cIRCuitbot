@@ -45,6 +45,9 @@ loadTriggers();
 //Load the modules enabled in the config file
 loadModules();
 
+//Register signal handlers for graceful shutdown
+registerSignalHandlers();
+
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
 

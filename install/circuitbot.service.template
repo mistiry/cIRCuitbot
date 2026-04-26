@@ -10,6 +10,7 @@ WorkingDirectory=__WORKDIR__
 ExecStart=/usr/bin/php bot.php -c __CONFFILE__
 Restart=always
 RestartSec=5
+TimeoutStopSec=10
 
 [Install]
 WantedBy=multi-user.target

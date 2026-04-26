@@ -53,10 +53,6 @@ logEntry("Bot starting: {$config['nickname']} on {$config['server']}:{$config['p
 //Connection - Open a socket connection to the IRC server, and pass our settings.
 connectToServer();
 
-//Finalize Connection - Sleep briefly to allow server time to respond to login and nickname,
-//and then join the channel!
-joinChannel($config['channel']);
-
 //Main Loop - This is the infinite loop where all the magic happens.
 while(1) {
     //Heartbeat Check

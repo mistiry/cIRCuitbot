@@ -51,6 +51,12 @@ function validateConfig($config) {
         }
     }
 
+    if (!empty($config['sasl_enabled']) && $config['sasl_enabled'] == true) {
+        if (empty($config['password'])) {
+            array_push($warnings, "sasl_enabled is true but no password is set — SASL authentication will be skipped");
+        }
+    }
+
     if (empty($errors)) {
         echo "Configuration has passed validation checks.\n";
         foreach ($warnings as $warning) {

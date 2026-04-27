@@ -116,8 +116,20 @@ while(1) {
                 }
             }
             break;
+        case '352':
+            // WHO reply — backfill hostname for members seeded from NAMES (353) with no hostname
+            $whopieces = explode(' ', trim($data));
+            $whoNick   = trim($whopieces[7] ?? '');
+            $whoHost   = trim($whopieces[5] ?? '');
+            if ($whoNick !== '' && $whoHost !== '' && isset($channelMembers[$whoNick])) {
+                if (empty($channelMembers[$whoNick]['hostname'])) {
+                    $channelMembers[$whoNick]['hostname'] = $whoHost;
+                }
+            }
+            break;
         case '366':
             logEntry("Channel members list built: " . count($channelMembers) . " users in {$config['channel']}", 'DEBUG');
+            fputs($socket, "WHO {$config['channel']}\r\n");
             break;
         case 'JOIN':
             if($ircdata['usernickname'] !== $config['nickname']) {

@@ -104,25 +104,35 @@ function isBotOwnerOrAdmin($ircdata) {
 
 function dumpChannelMembers($replyNick = null) {
     global $channelMembers, $socket;
-    $count  = count($channelMembers);
-    $header = "=== channelMembers dump ({$count} entries) ===";
-    logEntry($header, 'INFO');
-    if ($replyNick !== null) {
-        fputs($socket, "NOTICE {$replyNick} :{$header}\r\n");
-    }
+    $count   = count($channelMembers);
+    $ops     = [];
+    $voiced  = [];
+    $noHost  = 0;
+
     foreach ($channelMembers as $nick => $data) {
-        $modes   = empty($data['modes'])   ? '-'             : implode('', $data['modes']);
-        $host    = empty($data['hostname']) ? '(unknown)'    : $data['hostname'];
+        $modes   = empty($data['modes'])   ? '-'              : implode('', $data['modes']);
+        $host    = empty($data['hostname']) ? '(unknown)'     : $data['hostname'];
         $account = empty($data['account']) ? '(unidentified)' : $data['account'];
-        $line    = "  {$nick}  modes={$modes}  host={$host}  account={$account}";
-        logEntry($line, 'INFO');
-        if ($replyNick !== null) {
-            fputs($socket, "NOTICE {$replyNick} :{$line}\r\n");
-        }
+        if (in_array('o', $data['modes'])) $ops[]    = $nick;
+        if (in_array('v', $data['modes'])) $voiced[] = $nick;
+        if (empty($data['hostname']))       $noHost++;
+        logEntry("  {$nick}  modes={$modes}  host={$host}  account={$account}", 'INFO');
     }
-    $footer = "=== end channelMembers dump ===";
-    logEntry($footer, 'INFO');
+
+    $opsStr    = count($ops)    ? implode(', ', $ops)    : '(none)';
+    $voiceStr  = count($voiced) ? implode(', ', $voiced) : '(none)';
+    $noHostStr = $noHost > 0    ? " | {$noHost} missing hostname" : '';
+
+    logEntry("=== channelMembers dump ({$count} entries) ===", 'INFO');
+    logEntry("=== end channelMembers dump ===", 'INFO');
+
     if ($replyNick !== null) {
-        fputs($socket, "NOTICE {$replyNick} :{$footer}\r\n");
+        fputs($socket, "NOTICE {$replyNick} :Channel members: {$count} total{$noHostStr}\r\n");
+        usleep(200000);
+        fputs($socket, "NOTICE {$replyNick} :Ops: {$opsStr}\r\n");
+        usleep(200000);
+        fputs($socket, "NOTICE {$replyNick} :Voiced: {$voiceStr}\r\n");
+        usleep(200000);
+        fputs($socket, "NOTICE {$replyNick} :Full member list written to log at INFO level.\r\n");
     }
 }

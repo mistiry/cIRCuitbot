@@ -94,19 +94,12 @@ function isChannelVoiced($nick) {
 }
 
 function isBotOwnerOrAdmin($ircdata) {
-    global $config, $dbconnection;
+    global $config;
     if (!empty($config['bot_owner_hostname']) && $ircdata['userhostname'] === $config['bot_owner_hostname']) {
         return true;
     }
-    $hostname = mysqli_real_escape_string($dbconnection, $ircdata['userhostname']);
-    $result   = mysqli_query($dbconnection, "SELECT bot_flags FROM known_users WHERE hostname = '{$hostname}'");
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        if (!empty($row['bot_flags']) && strpos($row['bot_flags'], 'A') !== false) {
-            return true;
-        }
-    }
-    return false;
+    $flags = getBotFlags($ircdata['userhostname']);
+    return strpos($flags, 'A') !== false || strpos($flags, 'O') !== false;
 }
 
 function dumpChannelMembers($replyNick = null) {

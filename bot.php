@@ -28,6 +28,7 @@ $ignoredUsers = array();
 $timestamp = date("Y-m-d H:i:s T");
 $activeActivityArray = array();
 $timerArray = array();
+$opHandlers = array();
 $connectionAlive = false;
 $heartbeat = time();
 $channelMembers = array();
@@ -336,8 +337,19 @@ while(1) {
     //Op-targeted Channel Messages - Messages sent to @#channel are visible only to ops.
     //On channels that restrict non-identified users, these are often blocked messages
     //from users who don't know they need to identify with NickServ.
+    //Addons may register handlers in $opHandlers; if any returns true the event is consumed
+    //and the core opNotice fallback is skipped.
     if($ircdata['messagetype'] == "PRIVMSG" && $ircdata['location'] == "@".$config['channel']) {
-        handleOpNotice($ircdata);
+        $opHandled = false;
+        foreach($opHandlers as $opHandler) {
+            if(call_user_func($opHandler, $ircdata) === true) {
+                $opHandled = true;
+                break;
+            }
+        }
+        if(!$opHandled) {
+            handleOpNotice($ircdata);
+        }
     }
 
     //PM Command Parsing - This block parses commands that are seen in the private messages, either from modules or built-in commands

@@ -361,7 +361,7 @@ while(1) {
         if($firstword[0] == $config['command_flag']) {
             $command = trim(str_replace($config['command_flag'],"",$firstword));
             if(array_key_exists($command,$modules)) {
-                call_user_func($modules[$command],$ircdata['fullmessage']);
+                call_user_func($modules[$command],$ircdata);
             }
             //Built-in PM commands (owner/admin only)
             switch($firstword) {

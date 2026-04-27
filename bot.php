@@ -1,5 +1,5 @@
 <?php
-define('BOT_VERSION', '0.4.0');
+define('BOT_VERSION', '0.5.0');
 
 //PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.

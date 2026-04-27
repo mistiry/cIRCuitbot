@@ -1,5 +1,5 @@
 <?php
-define('BOT_VERSION', '0.5.1');
+define('BOT_VERSION', '0.6.0');
 
 //PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.
@@ -237,7 +237,7 @@ while(1) {
                     $rowtotallines = $row['total_lines'];
                 }
 
-                $aliases = unserialize($aliases);
+                $aliases = json_decode($aliases, true);
                 if(!is_array($aliases)) {
                     $aliases = array();
                 }
@@ -251,8 +251,8 @@ while(1) {
                 $totalwords = $rowtotalwords + str_word_count($ircdata['fullmessage']);
                 $totallines = $rowtotallines + 1;
 
-                //Serialize nickaliases array for storage
-                $nickaliases = serialize($aliases);
+                //Encode nickaliases array for storage
+                $nickaliases = json_encode($aliases);
 
                 //Compose update query
                 $query = "UPDATE known_users SET nick_aliases = '".mysqli_real_escape_string($dbconnection, $nickaliases)."', last_datatype = '".$ircdata['messagetype']."', last_message = '".$lastmessage."', last_location = '".$ircdata['location']."', total_words = ".$totalwords.", total_lines = ".$totallines.", timestamp = '".$timestamp."' WHERE id = ".$rowid."";
@@ -269,9 +269,9 @@ while(1) {
                 $wordcount = str_word_count($ircdata['fullmessage']);
                 $totallines = 1;
 
-                //Initialize the nickaliases array with the nickname and serialize it for storage
+                //Initialize the nickaliases array with the nickname and encode it for storage
                 $nickaliases = array("".$ircdata['usernickname']."");
-                $nickaliases = serialize($nickaliases);
+                $nickaliases = json_encode($nickaliases);
 
                 //Compose the insert query
                 $query = "INSERT INTO known_users (hostname,nick_aliases,last_datatype,last_message,last_location,total_words,total_lines,bot_flags,timestamp) VALUES ('".mysqli_real_escape_string($dbconnection, $ircdata['userhostname'])."','".$nickaliases."','".$ircdata['messagetype']."','".$lastmessage."','".$ircdata['location']."',".$wordcount.",".$totallines.",'U','".$timestamp."')";

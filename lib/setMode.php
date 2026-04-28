@@ -12,7 +12,7 @@ function setMode($direction,$mode,$user) {
     if(mysqli_num_rows($result) > 0) {
         $command = "MODE ".$config['channel']." ".$direction."".$mode." ".$user."";
         logEntry("setMode called to '".$direction."".$mode." ".$user."'", 'DEBUG');
-        fputs($socket,"$command\n");
+        fputs($socket,"$command\r\n");
     }
     return true;
 }

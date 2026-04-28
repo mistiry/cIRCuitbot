@@ -305,9 +305,11 @@ while(1) {
         //This allows the bot to detect things, like URL's, within a message and perform an action, rather than explicitly
         //being given a command to run. Not tested with tons of triggers, but either way seems pretty inefficient in its current
         //implementation.
-        foreach($triggers as $triggerWord=>$triggerFunc) {
+        foreach($triggers as $triggerWord=>$triggerFuncs) {
             if($triggerWord === "*" || stristr($ircdata['fullmessage'],$triggerWord)) {
-                call_user_func($triggerFunc,$ircdata);
+                foreach((array)$triggerFuncs as $triggerFunc) {
+                    call_user_func($triggerFunc,$ircdata);
+                }
             }
         }
 

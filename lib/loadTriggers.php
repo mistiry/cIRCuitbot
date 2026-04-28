@@ -12,7 +12,7 @@ function loadTriggers() {
                 $triggersArray  = $triggerConfig['trigger'];
                 foreach ($triggersArray as $trig) {
                     $pieces                  = explode("||", $trig);
-                    $triggers[$pieces[0]]    = $pieces[1];
+                    $triggers[$pieces[0]][]  = $pieces[1];
                 }
                 include("{$config['addons_dir']}/triggers/{$trigger}/trigger.php");
                 logEntry("Loaded trigger: {$trigger}", 'INFO');

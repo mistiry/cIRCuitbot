@@ -55,11 +55,11 @@ function connectToServer() {
         stream_set_blocking($socket, false);
     } else {
         stream_set_blocking($socket, false);
-        fputs($socket, "USER {$config['nickname']} 0 * :{$config['nickname']}\r\n");
         if ($config['password'] != "") {
             fputs($socket, "PASS {$config['password']}\r\n");
         }
         fputs($socket, "NICK {$config['nickname']}\r\n");
+        fputs($socket, "USER {$config['nickname']} 0 * :{$config['nickname']}\r\n");
     }
 
     sleep(1);

@@ -1,5 +1,5 @@
 <?php
-define('BOT_VERSION', '0.6.2');
+define('BOT_VERSION', '0.6.3');
 
 //PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.
@@ -198,6 +198,10 @@ while(1) {
             $ircdata['userhostname'] = trim("".$config['bridge_user_hostname_prefix']."".$bridgeUserHostnameMiddle."".$config['bridge_user_hostname_suffix']."");
             logEntry("Remapped relayed message to user '".$ircdata['usernickname']."@".$ircdata['userhostname']."'", 'DEBUG');
             $bridgeMessage = trim(str_replace("".$config['bridge_left_delimeter']."".$bridgeUser."".$config['bridge_right_delimeter']."","",$bridgeMessage));
+            //Strip IRC formatting codes (color, bold, italic, underline, reset, reverse) that the bridge bot
+            //wraps around the username and message body. Without this, downstream modules (trivia matching,
+            //command parsing, last_message storage, etc.) see invisible bytes that break exact comparisons.
+            $bridgeMessage = trim(preg_replace('/\x03(?:\d{1,2}(?:,\d{1,2})?)?|\x02|\x0f|\x16|\x1d|\x1f/', '', $bridgeMessage));
             $bridgeMessagePieces = explode(" ",$bridgeMessage);
             $firstword = trim(strval($bridgeMessagePieces[1]));
             $firstword = preg_replace('[^\w\d\!]', '', $firstword);

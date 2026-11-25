@@ -1,5 +1,5 @@
 <?php
-define('BOT_VERSION', '0.6.4');
+define('BOT_VERSION', '0.6.5');
 
 //PHP Runtime Options - These control various PHP settings like the time limit,
 //which must be 0 to allow the bot to run indefinitely.
@@ -32,6 +32,7 @@ $opHandlers = array();
 $connectionAlive = false;
 $heartbeat = time();
 $channelMembers = array();
+$serverHasWHOX = false;
 
 //Load the configuration specific on the command line '-c' parameter.
 $config = "";
@@ -107,6 +108,12 @@ while(1) {
     //hostname, and account. Seeded from the 353 NAMES list on join, then kept current as
     //the bot sees joins, parts, mode changes, etc.
     switch($ircdata['messagetype']) {
+        case '005':
+            // ISUPPORT - note whether the server supports WHOX, so the WHO on join can also ask for accounts
+            if (preg_match('/ WHOX( |$)/', ' ' . trim($data))) {
+                $serverHasWHOX = true;
+            }
+            break;
         case '353':
             $namepieces = explode(' ', trim($data));
             foreach(array_slice($namepieces, 5) as $entry) {
@@ -127,9 +134,32 @@ while(1) {
                 }
             }
             break;
+        case '354':
+            // WHOX reply to our "WHO #channel %tuhna,152": token user host nick account.
+            // Backfills hostname like 352 does, and the account for members who were already
+            // in the channel when the bot joined (JOIN and ACCOUNT only cover later changes).
+            $whopieces = explode(' ', trim($data));
+            if (($whopieces[3] ?? '') === '152') {
+                $whoHost    = trim($whopieces[5] ?? '');
+                $whoNick    = trim($whopieces[6] ?? '');
+                $whoAccount = trim($whopieces[7] ?? '');
+                if ($whoNick !== '' && isset($channelMembers[$whoNick])) {
+                    if ($whoHost !== '' && empty($channelMembers[$whoNick]['hostname'])) {
+                        $channelMembers[$whoNick]['hostname'] = $whoHost;
+                    }
+                    if ($whoAccount !== '' && $whoAccount !== '0') {
+                        $channelMembers[$whoNick]['account'] = $whoAccount;
+                    }
+                }
+            }
+            break;
         case '366':
             logEntry("Channel members list built: " . count($channelMembers) . " users in {$config['channel']}", 'DEBUG');
-            fputs($socket, "WHO {$config['channel']}\r\n");
+            if ($serverHasWHOX) {
+                fputs($socket, "WHO {$config['channel']} %tuhna,152\r\n");
+            } else {
+                fputs($socket, "WHO {$config['channel']}\r\n");
+            }
             break;
         case 'JOIN':
             if($ircdata['usernickname'] !== $config['nickname']) {
